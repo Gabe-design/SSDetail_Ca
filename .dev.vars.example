@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local development (git-ignored). Set the same as Worker secrets in Cloudflare.
+RESEND_API_KEY=
+TURNSTILE_SECRET_KEY=

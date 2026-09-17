@@ -1,0 +1,76 @@
+/* ------------------------------------------------------------------
+   SS Detail design tokens
+   Values are carried over unchanged from the original site (legacy/index.html).
+   --teal / --brass were leftover names for what is now a monochrome palette;
+   they are kept as aliases so ported rules keep working.
+   ------------------------------------------------------------------ */
+:root {
+  /* surfaces */
+  --bg: #0a0a0a;
+  --bg-elevated: #151515;
+  --bg-elevated-2: #202020;
+
+  /* text */
+  --foam: #f5f5f5;
+  --muted: #9c9c9c;
+  --muted-2: #6b6b6b; /* decorative labels only — below AA for small text */
+
+  /* accents (all greys/white — the metal gradient is the only "color") */
+  --accent: #b8b8b8;
+  --accent-bright: #e2e2e2;
+  --teal: var(--accent);
+  --teal-bright: var(--accent-bright);
+  --brass: #e8e8e8;
+  --brass-bright: #ffffff;
+
+  /* hairlines */
+  --line: rgba(245, 245, 245, 0.12);
+  --line-strong: rgba(245, 245, 245, 0.22);
+  --line-gradient: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  --card-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  --danger: #d9483a;
+  --success: #6fcf97;
+
+  /* brushed-chrome — the brand's signature */
+  --metal: linear-gradient(135deg, #cfcfcf 0%, #ffffff 22%, #9a9a9a 48%, #ffffff 74%, #c2c2c2 100%);
+
+  /* geometry */
+  --radius: 4px;
+  --radius-sm: 2px;
+  --wrap: 1120px;
+  --gutter: 20px;
+
+  /* type */
+  --display: 'Oswald Variable', 'Oswald', 'Arial Narrow', sans-serif;
+  --body: 'Work Sans Variable', 'Work Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* spacing scale (mobile values; bumped at ≥880px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --section: 56px;   /* vertical padding of a section */
+  --hero-top: 56px;
+
+  /* layout */
+  --header-h: 64px;
+  --tap: 44px;       /* minimum touch target */
+  --z-header: 50;
+  --z-menu: 55;
+  --z-floating: 60;
+}
+
+@media (min-width: 55em) {
+  :root {
+    --gutter: 24px;
+    --section: 80px;
+    --hero-top: 96px;
+    --header-h: 72px;
+  }
+}

@@ -1,0 +1,13 @@
+# SS Detail site — notes for Claude Code
+
+- Plan, assumptions and open client questions: docs/PLAN.md. Keep it current when scope changes.
+- Node 22 (`.nvmrc`). The nvm default on this machine is 18 — use `nvm use` or the absolute node path.
+- Dev server: `npm run dev` (the desktop app's launch config "ssdetail-dev" runs it with Node 22).
+  If scoped component styles look stale in the browser after editing a `.astro` file, restart the dev server.
+- Content rules: copy comes from `legacy/index.html` verbatim unless docs/PLAN.md §3.4 lists the change.
+  Business facts and prices live only in `src/data/*.ts`; never hard-code them in components.
+- `null` facts in `src/data/business.ts` are unconfirmed client details — render nothing, never placeholder text.
+- Brand assets are generated: edit `scripts/build-brand.mjs`, then `npm run brand`.
+- Cloudflare: Workers with static assets via `@astrojs/cloudflare`; `session: false` in astro.config so no KV is needed.
+
+Astro docs: https://docs.astro.build (routing, components, styling, images).

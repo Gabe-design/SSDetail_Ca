@@ -8,3 +8,7 @@ dist/
 !.env.example
 .DS_Store
 Thumbs.db
+# logs
+npm-debug.log*
+# editors
+.idea/

@@ -1,0 +1,78 @@
+---
+/**
+ * SS Detail logo: the client's mark (white disc, serif "SS", sparkles — built as
+ * vectors by scripts/build-brand.mjs) beside the "SS DETAIL" wordmark with the
+ * owners' names beneath it.
+ */
+import Mark from '../assets/brand/logo-mark.svg';
+import { business } from '../data/business';
+
+interface Props {
+  size?: number;
+  href?: string;
+  class?: string;
+  /** Hide the wordmark (mark only). */
+  markOnly?: boolean;
+  /** Hide the owners' line (e.g. very tight spaces). */
+  hideOwners?: boolean;
+}
+const { size = 34, href = '/', class: className, markOnly = false, hideOwners = false } = Astro.props;
+---
+
+<a class:list={['logo', className]} href={href} aria-label={`${business.name} — home`}>
+  <Mark class="mark" width={size} height={size} aria-hidden="true" />
+  {
+    !markOnly && (
+      <span class="wordmark">
+        <span class="name">
+          SS <span class="accent">DETAIL</span>
+        </span>
+        {!hideOwners && <span class="owners">{business.owners}</span>}
+      </span>
+    )
+  }
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--foam);
+    min-height: var(--tap);
+  }
+  .logo :global(.mark) {
+    flex-shrink: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  }
+  .wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .name {
+    font-family: var(--display);
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .accent {
+    color: var(--brass-bright);
+  }
+  .owners {
+    margin-top: 4px;
+    font-family: var(--body);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .logo.small .name {
+    font-size: 16px;
+  }
+  .logo.small .owners {
+    font-size: 10px;
+  }
+</style>

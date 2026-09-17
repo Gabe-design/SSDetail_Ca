@@ -1,0 +1,134 @@
+---
+import Logo from './Logo.astro';
+import { navItems } from '../data/nav';
+import { business, formatPhone } from '../data/business';
+
+const year = new Date().getFullYear();
+const owner = business.legalName ?? business.name;
+const modelLine =
+  business.serviceModel === 'mobile'
+    ? 'Mobile detailing — we come to you'
+    : business.serviceModel === 'shop'
+      ? 'Drop-off detailing'
+      : business.serviceModel === 'both'
+        ? 'Mobile & drop-off detailing'
+        : null;
+---
+
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div class="brand">
+      <Logo size={28} class="small" />
+      <p class="muted tagline">{business.tagline}</p>
+      {modelLine && <p class="muted">{modelLine}</p>}
+      {business.serviceArea && <p class="muted">Serving {business.serviceArea}</p>}
+    </div>
+
+    <nav class="foot-nav" aria-label="Footer">
+      <span class="label">Pages</span>
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="contact">
+      <span class="label">Contact</span>
+      <ul>
+        {
+          business.phone && (
+            <li>
+              <a href={`tel:${business.phone}`}>{formatPhone(business.phone)}</a>
+            </li>
+          )
+        }
+        <li><a href={`mailto:${business.email}`}>{business.email}</a></li>
+        {business.hours && <li class="muted">{business.hours}</li>}
+        {
+          business.instagram && (
+            <li>
+              <a href={business.instagram} rel="me noopener" target="_blank">
+                Instagram
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap legal">
+    <span class="mono">© {year} {owner}. All rights reserved.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid transparent;
+    border-image: var(--line-gradient) 1;
+    padding-block: var(--space-7) var(--space-6);
+    margin-top: auto;
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .brand .tagline {
+    margin-top: var(--space-3);
+  }
+  .brand p {
+    font-size: 14px;
+  }
+  .label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--space-3);
+  }
+  ul {
+    display: grid;
+    gap: 2px;
+  }
+  li {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  a:hover {
+    color: var(--foam);
+  }
+  .legal {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .legal::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: var(--line);
+    margin-bottom: var(--space-4);
+  }
+
+  @media (min-width: 40em) {
+    .grid {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+</style>
