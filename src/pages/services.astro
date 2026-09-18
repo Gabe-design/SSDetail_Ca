@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import LineupStrip from '../components/LineupStrip.astro';
+import PackageTicket from '../components/PackageTicket.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { packages } from '../data/packages';
+import { business } from '../data/business';
+---
+
+<Base
+  title="Services & Pricing"
+  description={`Four mobile detailing packages priced by vehicle size, serving ${business.serviceArea}: Maintenance Detail from $70, Interior Detail from $180, Decon, Clay, Seal from $185, and Interior & Exterior Premium from $300.`}>
+  <section class="section">
+    <div class="wrap">
+      <SectionHead level={1} eyebrow="Services & Pricing" title="Choose your level of detail">
+        Pricing is set by vehicle size. Trucks, 3-row SUVs, and heavily soiled interiors take more time and product —
+        every tier below reflects that.
+      </SectionHead>
+      <LineupStrip />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="tickets">
+        {packages.map((p, i) => <PackageTicket pkg={p} eager={i === 0} delay={(i % 2) * 80} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Have a truck, 3-row, or a vehicle that needs extra attention?"
+    text="Send us a few details and we'll confirm exact pricing before you book."
+    label="Request a Custom Quote"
+  />
+
+  <MobileBar slot="after-footer" />
+</Base>
+
+<style>
+  .tickets {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 70em) {
+    .tickets {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

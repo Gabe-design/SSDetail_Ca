@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { business, formatPhone } from '../../data/business';
+---
+
+<Base offer={false} title="Request received" description="Your quote request is in. We reply within 24 hours with pricing and dates.">
+  <section class="section">
+    <div class="wrap">
+      <SectionHead level={1} eyebrow="Quote & Contact" title="Request received">
+        Thanks, we got it. {business.responseTime}
+      </SectionHead>
+      <div class="actions">
+        {
+          business.phone && (
+            <a class="btn btn-primary" href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`}>
+              {business.acceptsSms ? 'Text' : 'Call'} {formatPhone(business.phone)}
+            </a>
+          )
+        }
+        <a class="btn btn-ghost" href="/services">Back to pricing</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+</style>

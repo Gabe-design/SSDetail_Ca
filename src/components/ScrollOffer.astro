@@ -1,0 +1,223 @@
+---
+/**
+ * Scroll-triggered offer (ported from Moss & Ross's DemoOffer): one dialog,
+ * shown once, to a visitor who has read 60% of the page. Remembered for 30
+ * days in localStorage. Not rendered on the quote pages, where the visitor is
+ * already converting. A native <dialog> gives focus trapping, Esc and focus
+ * restore for free.
+ */
+import { business, formatPhone } from '../data/business';
+---
+
+<dialog class="offer" data-scroll-offer aria-labelledby="offer-title" aria-describedby="offer-body">
+  <div class="panel">
+    <button class="close" type="button" aria-label="Close" data-offer-close autofocus>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </button>
+    <span class="rule" aria-hidden="true"></span>
+    <span class="eyebrow">Free quote</span>
+    <h2 id="offer-title">Not sure which package fits your car?</h2>
+    <p id="offer-body" class="muted">
+      Tell us the vehicle and how it's been treated. We reply within 24 hours with exact pricing and the next open dates.
+      The consultation is free, and we come to you anywhere in {business.serviceArea}.
+    </p>
+    <a class="btn btn-primary btn-block" href="/quote" data-offer-close>Get my free quote</a>
+    {
+      business.phone && (
+        <a class="btn btn-ghost btn-block" href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`} data-offer-close>
+          {business.acceptsSms ? 'Text' : 'Call'} {formatPhone(business.phone)}
+        </a>
+      )
+    }
+    <button class="later" type="button" data-offer-close>Not right now</button>
+  </div>
+</dialog>
+
+<style>
+  .offer {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    display: none;
+    place-items: center;
+    padding-inline: var(--gutter);
+    color: var(--foam);
+  }
+  .offer[open] {
+    display: grid;
+    animation: backdrop-in 220ms ease-out both;
+  }
+  .offer::backdrop {
+    background: rgba(10, 10, 10, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .panel {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    box-shadow:
+      var(--card-highlight),
+      0 24px 60px rgba(0, 0, 0, 0.6);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    display: grid;
+    gap: var(--space-3);
+    animation: dialog-in 220ms ease-out both;
+  }
+  .close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: var(--tap);
+    height: var(--tap);
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+  .close:hover {
+    color: var(--foam);
+  }
+  .rule {
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--metal);
+    margin-bottom: var(--space-2);
+  }
+  .eyebrow {
+    margin-bottom: 0;
+  }
+  h2 {
+    font-size: clamp(24px, 6vw, 30px);
+    color: var(--foam);
+  }
+  p {
+    font-size: 15px;
+    margin-bottom: var(--space-2);
+  }
+  .later {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+    min-height: var(--tap);
+    transition: color 0.2s ease;
+  }
+  .later:hover {
+    color: var(--foam);
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .offer[open],
+    .panel {
+      animation: none;
+    }
+  }
+  @media (min-width: 40em) {
+    .panel {
+      padding: var(--space-7) var(--space-6) var(--space-6);
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'ssd-offer-seen';
+  const SUPPRESS_DAYS = 30;
+  const TRIGGER_RATIO = 0.6;
+  // In development the offer opens on every reload so it can be looked at
+  // without clearing storage. Inlined at build time, so production suppresses.
+  const ALWAYS_SHOW = import.meta.env.DEV;
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-scroll-offer]');
+
+  const recentlySeen = () => {
+    if (ALWAYS_SHOW) return false;
+    try {
+      const seen = window.localStorage.getItem(STORAGE_KEY);
+      if (!seen) return false;
+      const age = Date.now() - Number(seen);
+      return Number.isFinite(age) && age < SUPPRESS_DAYS * 864e5;
+    } catch {
+      // Storage blocked: showing it never beats showing it on every scroll.
+      return true;
+    }
+  };
+  const remember = () => {
+    if (ALWAYS_SHOW) return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    } catch {}
+  };
+
+  if (dialog && typeof dialog.showModal === 'function' && !recentlySeen()) {
+    const { body } = document;
+    let frame = 0;
+
+    const lock = () => {
+      const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+      body.style.overflow = 'hidden';
+      if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+    };
+    const unlock = () => {
+      body.style.overflow = '';
+      body.style.paddingRight = '';
+    };
+
+    const open = () => {
+      lock();
+      dialog.showModal();
+    };
+    dialog.addEventListener('close', unlock);
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close(); // backdrop click
+    });
+    for (const el of dialog.querySelectorAll<HTMLElement>('[data-offer-close]')) {
+      el.addEventListener('click', () => dialog.close());
+    }
+
+    const stop = () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+    };
+    const check = () => {
+      frame = 0;
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      if (window.scrollY / scrollable < TRIGGER_RATIO) return;
+      stop();
+      remember();
+      open();
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+  }
+</script>

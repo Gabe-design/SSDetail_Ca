@@ -1,0 +1,113 @@
+---
+/**
+ * Compact package comparison at the top of /services — name, from-price,
+ * what it's for, and a jump link to the full ticket. Horizontal scroll on
+ * phones, four columns on desktop.
+ */
+import { packages, formatPrice } from '../data/packages';
+---
+
+<nav class="strip" aria-label="Packages at a glance">
+  <ul>
+    {
+      packages.map((p, i) => (
+        <li class:list={['card', 'card--hover', 'reveal', { featured: p.featured }]} style={`transition-delay:${i * 60}ms`}>
+          <a href={`#${p.slug}`}>
+            <span class="idx mono">0{i + 1}</span>
+            <span class="name">{p.name}</span>
+            <span class="best muted">{p.bestFor}</span>
+            <span class="price mono">
+              from <b>{formatPrice(p.from)}</b>
+            </span>
+            <span class="go mono">Details ↓</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .strip {
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  ul {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(220px, 1fr);
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+  }
+  li {
+    scroll-snap-align: start;
+  }
+  li.featured {
+    border-color: rgba(180, 180, 180, 0.4);
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: 100%;
+    padding: 18px 18px 16px;
+    text-decoration: none;
+    color: var(--foam);
+  }
+  .idx {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+  .name {
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 17px;
+    line-height: 1.15;
+  }
+  .best {
+    font-size: 13px;
+  }
+  .price {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: 12.5px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .price b {
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--accent-bright);
+  }
+  .go {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+  a:hover .go {
+    color: var(--accent-bright);
+  }
+  @media (min-width: 55em) {
+    .strip {
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+    ul {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      padding-bottom: 0;
+    }
+  }
+</style>

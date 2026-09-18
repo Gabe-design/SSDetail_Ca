@@ -1,0 +1,59 @@
+---
+/** Full-width call-to-action band (gradient surface, hairline top/bottom). */
+interface Props {
+  title: string;
+  text?: string;
+  href?: string;
+  label?: string;
+}
+const { title, text, href = '/quote', label = 'Get My Free Quote' } = Astro.props;
+---
+
+<div class="cta-banner">
+  <div class="wrap inner reveal">
+    <div>
+      <h3>{title}</h3>
+      {text && <p>{text}</p>}
+    </div>
+    <a class="btn btn-primary" href={href}>{label}</a>
+  </div>
+</div>
+
+<style>
+  .cta-banner {
+    background: linear-gradient(120deg, var(--bg-elevated), var(--bg-elevated-2));
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--space-7);
+  }
+  .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+  }
+  h3 {
+    font-size: clamp(22px, 5.5vw, 26px);
+    color: var(--foam);
+    max-width: 520px;
+  }
+  p {
+    color: var(--muted);
+    margin-top: var(--space-2);
+  }
+  .btn {
+    width: 100%;
+  }
+  @media (min-width: 40em) {
+    .btn {
+      width: auto;
+    }
+  }
+  @media (min-width: 55em) {
+    .inner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+</style>

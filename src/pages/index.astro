@@ -1,0 +1,227 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CompareSlider from '../components/CompareSlider.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import PackageOverview from '../components/PackageOverview.astro';
+import Gallery from '../components/Gallery.astro';
+import MobileBar from '../components/MobileBar.astro';
+import Reveal from '../components/Reveal.astro';
+import VideoReel from '../components/VideoReel.astro';
+import { packages } from '../data/packages';
+import { gallery } from '../data/gallery';
+import { business, formatPhone } from '../data/business';
+
+const why = [
+  {
+    title: 'Every Vehicle Sized Right',
+    text: 'Sedans, mid-size SUVs, trucks, and 3-row vehicles are all priced for the actual time and product they take — no flat, one-size pricing.',
+  },
+  {
+    title: 'Products That Protect',
+    text: 'Ceramic sealant, hydrophobic coatings, and interior protectants are built into our packages so results outlast the wash itself.',
+  },
+  {
+    title: 'Straightforward Pricing',
+    text: 'Every add-on — seat extraction, carpet extraction, exterior bolt-ons — is listed up front. No surprises when we hand back the keys.',
+  },
+];
+---
+
+<Base
+  isHome
+  title="Home"
+  description={`Mobile car detailing in ${business.serviceArea}. We come to you for hand washes, deep interior resets, and ceramic paint protection, from a $70 monthly refresh to a full showroom-level detail.`}>
+  <Hero />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow="See The Difference" title="Drag to compare" />
+      <Reveal>
+        <CompareSlider />
+      </Reveal>
+    </div>
+  </section>
+
+  {
+    business.serviceModel === 'mobile' && (
+      <div class="mobile-strip">
+        <div class="wrap inner reveal">
+          <p class="mono lead">// We come to you</p>
+          <p>
+            Fully mobile detailing across <strong>{business.serviceArea}</strong>. We work in your driveway or at your
+            office, on your schedule.{' '}
+            {business.phone && (
+              <>
+                Call or text <a href={`tel:${business.phone}`}>{formatPhone(business.phone)}</a>.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow="Why SS Detail" title="Detailing that fits how you drive">
+        Whether it's a quick monthly refresh or a full reset, every package is built to keep your vehicle protected —
+        not just clean for a week.
+      </SectionHead>
+      <div class="why-grid">
+        {
+          why.map((w, i) => (
+            <article class="card card--hover watermark why-card reveal" data-num={`0${i + 1}`} style={`transition-delay:${i * 80}ms`}>
+              <span class="num mono">0{i + 1}</span>
+              <h3>{w.title}</h3>
+              <p>{w.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Not sure which package fits your vehicle?"
+    text="Tell us the vehicle and how it's been treated — we'll recommend the right level of detail."
+    label="Get My Free Quote"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow="The Lineup" title="Four ways to a cleaner ride" />
+      <div class="lineup">
+        {packages.map((p, i) => <PackageOverview pkg={p} delay={i * 80} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <SectionHead eyebrow="Recent Work" title="A few from the road">
+        Detailed on location, in the owners' driveways across {business.serviceAreaShort}.
+      </SectionHead>
+      <Gallery items={gallery.slice(0, 6)} />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <SectionHead eyebrow="In motion" title="Watch a detail happen">
+        Short clips from recent jobs, filmed on location. Sound is off until you tap the speaker.
+      </SectionHead>
+      <VideoReel />
+      <p class="more reveal">
+        <a class="btn btn-ghost" href="/about#work">See more of our work</a>
+        {
+          business.instagram && (
+            <a class="btn btn-ghost" href={business.instagram} target="_blank" rel="noopener">
+              @{business.instagramHandle} on Instagram
+            </a>
+          )
+        }
+      </p>
+    </div>
+  </section>
+
+  <MobileBar slot="after-footer" />
+</Base>
+
+<style>
+  .mobile-strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(120deg, var(--bg-elevated), var(--bg-elevated-2));
+  }
+  .mobile-strip .inner {
+    padding-block: var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .mobile-strip .lead {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-bright);
+  }
+  .mobile-strip p:not(.lead) {
+    color: var(--muted);
+    max-width: 62ch;
+  }
+  .mobile-strip strong {
+    color: var(--foam);
+    font-weight: 600;
+  }
+  .mobile-strip a {
+    color: var(--foam);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .why-grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .why-card {
+    padding: var(--space-5);
+  }
+  .why-card .num {
+    color: var(--brass);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+  .why-card h3 {
+    margin-top: var(--space-3);
+    font-size: 18px;
+    color: var(--foam);
+  }
+  .why-card p {
+    color: var(--muted);
+    font-size: 14.5px;
+    margin-top: var(--space-2);
+  }
+
+  .lineup {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-6);
+  }
+  .more .btn {
+    flex: 1 1 220px;
+  }
+
+  @media (min-width: 40em) {
+    .lineup {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .more .btn {
+      flex: 0 1 auto;
+    }
+  }
+  @media (min-width: 55em) {
+    .mobile-strip .inner {
+      grid-template-columns: auto 1fr;
+      align-items: baseline;
+      gap: var(--space-6);
+    }
+    .why-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+    }
+  }
+  @media (min-width: 70em) {
+    .lineup {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+    }
+  }
+</style>

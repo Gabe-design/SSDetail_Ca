@@ -1,0 +1,75 @@
+---
+/**
+ * The hero "WORK ORDER" card — package names with from-prices, rendered from
+ * src/data/packages.ts so it can never drift from the pricing page.
+ */
+import { packages, formatPrice } from '../data/packages';
+---
+
+<aside class="work-order card" aria-label="Packages at a glance">
+  <ul>
+    {
+      packages.map((p) => (
+        <li>
+          <a class="tag" href={`/services#${p.slug}`}>
+            {p.shortName}
+          </a>
+          <span class="val mono">from {formatPrice(p.from)}</span>
+        </li>
+      ))
+    }
+  </ul>
+</aside>
+
+<style>
+  .work-order {
+    position: relative;
+    padding: 22px 20px 12px;
+  }
+  .work-order::before {
+    content: 'WORK ORDER';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  li:last-child {
+    border-bottom: none;
+  }
+  .tag {
+    color: var(--foam);
+    text-decoration: none;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    flex: 1;
+  }
+  .tag:hover {
+    color: var(--accent-bright);
+  }
+  .val {
+    color: var(--accent-bright);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 55em) {
+    .work-order {
+      padding: 26px 26px 16px;
+    }
+  }
+</style>

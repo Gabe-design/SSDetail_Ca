@@ -1,0 +1,18 @@
+---
+/** Centered eyebrow + heading + optional intro — the section opener used everywhere. */
+interface Props {
+  eyebrow: string;
+  title: string;
+  /** Use an h1 on sub-pages (first heading), h2 elsewhere. */
+  level?: 1 | 2;
+  id?: string;
+}
+const { eyebrow, title, level = 2, id } = Astro.props;
+const Tag = level === 1 ? 'h1' : 'h2';
+---
+
+<div class="section-head reveal">
+  <span class="eyebrow">{eyebrow}</span>
+  <Tag id={id}>{title}</Tag>
+  {Astro.slots.has('default') && <p><slot /></p>}
+</div>

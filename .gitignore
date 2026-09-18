@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+# logs
+npm-debug.log*
+# editors
+.idea/
+
+# raw client videos (90 MB each) stay local; encoded versions live in public/videos
+legacy/client-videos/

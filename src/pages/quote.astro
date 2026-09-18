@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { business, formatPhone } from '../data/business';
+
+const faqs = [
+  {
+    q: 'Do you come to me?',
+    a: `Yes. We're fully mobile across ${business.serviceArea}. We detail in your driveway, at your office, or wherever the vehicle is parked.`,
+  },
+  {
+    q: 'How do I book?',
+    a: `Send the form, or ${business.acceptsSms ? 'call or text' : 'call'} us${business.phone ? ` at ${formatPhone(business.phone)}` : ''}. We reply with exact pricing for your vehicle and the next available dates.`,
+  },
+  {
+    q: 'How is pricing set?',
+    a: 'By vehicle size and condition. Each package lists its sedan, truck and 3-row prices and its add-ons up front, and the quote is the price you pay. Heavy dirt or pet hair can add a charge; we tell you before we start.',
+  },
+  {
+    q: 'Not sure which package you need?',
+    a: "Pick \"Not sure\" in the form and describe the vehicle. The consultation is free, and we recommend the package that fits the car's condition.",
+  },
+];
+---
+
+<Base
+  offer={false}
+  title="Get a Free Quote"
+  description={`Tell us about your vehicle and the package you want. We reply within 24 hours with exact pricing and the next available dates. Mobile detailing across ${business.serviceArea}.`}>
+  <section class="section">
+    <div class="wrap">
+      <SectionHead level={1} eyebrow="Quote & Contact" title="Get your free quote">
+        Fill out a few details and we'll get back to you with exact pricing and scheduling.
+      </SectionHead>
+
+      <div class="grid">
+        <QuoteForm />
+
+        <aside class="side reveal" style="transition-delay:100ms">
+          {
+            business.phone && (
+              <div class="card contact">
+                <span class="label mono">{business.acceptsSms ? 'Call or text' : 'Call'}</span>
+                <a class="value" href={`tel:${business.phone}`}>
+                  {formatPhone(business.phone)}
+                </a>
+                {business.acceptsSms && (
+                  <a class="btn btn-ghost" href={`sms:${business.phone}`}>
+                    Text us
+                  </a>
+                )}
+              </div>
+            )
+          }
+          <div class="card contact">
+            <span class="label mono">Email</span>
+            <a class="value" href={`mailto:${business.email}`}>{business.email}</a>
+          </div>
+          {
+            business.instagram && (
+              <div class="card contact">
+                <span class="label mono">Instagram</span>
+                <a class="value" href={business.instagram} target="_blank" rel="noopener">
+                  @{business.instagramHandle}
+                </a>
+                <p class="muted small">DMs are open for scheduling too.</p>
+              </div>
+            )
+          }
+          {
+            business.serviceArea && (
+              <div class="card contact">
+                <span class="label mono">Service area</span>
+                <p class="value plain">{business.serviceArea}</p>
+                <p class="muted small">Mobile. We come to you.</p>
+              </div>
+            )
+          }
+          <div class="card contact">
+            <span class="label mono">Response time</span>
+            <p class="muted">{business.responseTime}</p>
+          </div>
+          <div class="note">
+            Add-ons like seat extraction, carpet extraction, and exterior bolt-ons can be included in your quote — just
+            mention them in the notes.
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <SectionHead eyebrow="Good to know" title="Before you book" />
+      <dl class="faq">
+        {
+          faqs.map((f, i) => (
+            <div class="card qa reveal" style={`transition-delay:${(i % 2) * 80}ms`}>
+              <dt>{f.q}</dt>
+              <dd>{f.a}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .side {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .contact {
+    padding: var(--space-5);
+    display: grid;
+    gap: 6px;
+  }
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .value {
+    font-size: 18px;
+    color: var(--accent-bright);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(226, 226, 226, 0.4);
+    width: fit-content;
+    overflow-wrap: anywhere;
+  }
+  .value.plain {
+    color: var(--foam);
+    border: none;
+  }
+  .small {
+    font-size: 13px;
+  }
+  .contact .btn {
+    margin-top: var(--space-2);
+    width: fit-content;
+  }
+  .note {
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .faq {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .qa {
+    padding: var(--space-5);
+  }
+  dt {
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 16px;
+    color: var(--foam);
+  }
+  dd {
+    margin: var(--space-2) 0 0;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  @media (min-width: 40em) {
+    .faq {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 55em) {
+    .grid {
+      grid-template-columns: 1fr 0.85fr;
+      gap: var(--space-7);
+    }
+  }
+</style>

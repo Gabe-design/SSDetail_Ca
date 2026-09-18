@@ -1,0 +1,51 @@
+---
+/**
+ * schema.org structured data for the business. AutoWash is the closest
+ * schema.org type to a detailer (schema.org has no AutoDetailing type); it is a
+ * LocalBusiness subtype, so Google treats it as a local business listing.
+ */
+import { business } from '../data/business';
+import { packages } from '../data/packages';
+
+const site = (Astro.site ?? new URL(business.siteUrl)).toString().replace(/\/$/, '');
+const [firstOwner, secondOwner] = business.owners.split(' & ');
+
+const data = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoWash',
+  '@id': `${site}/#business`,
+  name: business.name,
+  alternateName: ['SS Car Detailing', 'SS Mobile Car Detailing', 'Showroom Shine Auto Detailing'],
+  description: `${business.descriptor} across ${business.serviceArea}. Hand washes, interior resets and ceramic paint protection, priced by vehicle size.`,
+  url: site,
+  image: `${site}/og.jpg`,
+  logo: `${site}/icon-512.png`,
+  telephone: business.phone ?? undefined,
+  email: business.email,
+  priceRange: `$${Math.min(...packages.map((p) => p.from))}–$${Math.max(...packages.flatMap((p) => p.tiers.map((t) => t.price)))}`,
+  currenciesAccepted: 'USD',
+  areaServed: [
+    { '@type': 'AdministrativeArea', name: 'Ventura County, CA' },
+    { '@type': 'AdministrativeArea', name: 'Los Angeles County, CA' },
+  ],
+  founder: [firstOwner, secondOwner].filter(Boolean).map((name) => ({ '@type': 'Person', name })),
+  sameAs: [business.instagram, business.googleBusiness].filter(Boolean),
+  openingHours: business.hours ?? undefined,
+  makesOffer: packages.map((p) => ({
+    '@type': 'Offer',
+    name: p.name,
+    url: `${site}/services#${p.slug}`,
+    priceCurrency: 'USD',
+    price: p.from,
+    priceSpecification: p.tiers.map((t) => ({
+      '@type': 'UnitPriceSpecification',
+      price: t.price,
+      priceCurrency: 'USD',
+      name: t.label,
+    })),
+    itemOffered: { '@type': 'Service', name: p.name, description: p.tagline, serviceType: 'Mobile auto detailing' },
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

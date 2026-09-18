@@ -1,0 +1,24 @@
+---
+/**
+ * Fade-up entrance for a block of content (ported from Moss & Ross).
+ *
+ * The hidden state lives in CSS behind the .js-reveal class, which an inline
+ * script in the layout adds before the body paints, and only when JavaScript
+ * and motion are available. One shared scroll pass in the layout reveals every
+ * block whose top crosses the trigger line (see src/scripts/reveal.ts).
+ */
+interface Props {
+  /** Element to render (div, li, article, section…). */
+  as?: string;
+  /** transition-delay in ms, for staggering a row of siblings. */
+  delay?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+const { as = 'div', delay = 0, class: className, ...rest } = Astro.props;
+const Tag = as as 'div'; // any HTML tag name; typed as div so Astro accepts the dynamic tag
+---
+
+<Tag class:list={['reveal', className]} style={delay ? `transition-delay:${delay}ms` : undefined} {...rest}>
+  <slot />
+</Tag>

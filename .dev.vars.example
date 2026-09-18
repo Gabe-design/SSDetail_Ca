@@ -1,0 +1,13 @@
+# Copy to .dev.vars for local development (git-ignored). Set the same values on the Worker in Cloudflare
+# (Settings → Variables & Secrets). Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY. The rest are plain vars.
+RESEND_API_KEY=
+TURNSTILE_SECRET_KEY=
+# Sender must be on a Resend-verified domain in production. Without it, Resend's test sender is used
+# and mail only reaches the Resend account owner.
+RESEND_FROM="SS Detail Website <quotes@ssdetail.com>"
+QUOTE_TO=sscardetailingca@gmail.com
+SEND_CUSTOMER_CONFIRMATION=false
+# Build-time (client) var: set it in the Workers Builds "build variables" too. Widget renders only when set.
+TURNSTILE_SITE_KEY=
+# Cloudflare Web Analytics token (build-time, client). Beacon renders only when set.
+CF_BEACON_TOKEN=

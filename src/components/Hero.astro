@@ -1,0 +1,126 @@
+---
+import WorkOrderCard from './WorkOrderCard.astro';
+import { business, formatPhone } from '../data/business';
+
+const eyebrow = business.serviceArea
+  ? `${business.shortTagline} · ${business.serviceArea}`
+  : business.shortTagline;
+---
+
+<section class="hero" id="hero">
+  <div class="gloss" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <div class="copy">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>Bring the <span class="accent">shine</span> back to every drive.</h1>
+      <p class="lead">
+        Hand washes, deep interior resets, and paint protection built around how you actually use your vehicle — from a
+        monthly refresh to a full showroom-level detail.
+      </p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="/quote">Get a Free Quote</a>
+        <a class="btn btn-ghost" href="/services">See Pricing</a>
+      </div>
+      {
+        business.phone && (
+          <p class="reach mono">
+            {business.acceptsSms ? 'Call or text ' : 'Call '}
+            <a href={`tel:${business.phone}`}>{formatPhone(business.phone)}</a>
+          </p>
+        )
+      }
+    </div>
+    <WorkOrderCard />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: var(--hero-top) 0 var(--section);
+    border-bottom: 1px solid var(--line);
+  }
+  .gloss {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(600px circle at var(--mx, 70%) var(--my, 20%), rgba(255, 255, 255, 0.08), transparent 55%),
+      linear-gradient(135deg, #0a0a0a 0%, #121212 45%, #0a0a0a 100%);
+    pointer-events: none;
+  }
+  .inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  h1 {
+    font-size: clamp(38px, 10vw, 64px);
+    line-height: 1.02;
+    color: var(--foam);
+  }
+  .accent {
+    color: var(--brass-bright);
+  }
+  .lead {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 46ch;
+    margin: var(--space-5) 0 var(--space-6);
+  }
+  .ctas {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .reach {
+    margin-top: var(--space-5);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .reach a {
+    color: var(--foam);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  @media (min-width: 40em) {
+    .ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .lead {
+      font-size: 18px;
+    }
+  }
+  @media (min-width: 55em) {
+    .inner {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+    }
+    h1 {
+      font-size: clamp(38px, 5.2vw, 64px);
+    }
+  }
+</style>
+
+<script>
+  // Mouse-follow gloss (pointer devices only; no-op on touch and with reduced motion).
+  const hero = document.getElementById('hero');
+  const gloss = hero?.querySelector<HTMLElement>('.gloss');
+  if (
+    hero &&
+    gloss &&
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    window.matchMedia('(prefers-reduced-motion: no-preference)').matches
+  ) {
+    hero.addEventListener('mousemove', (e) => {
+      const r = hero.getBoundingClientRect();
+      gloss.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+      gloss.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+    });
+  }
+</script>
