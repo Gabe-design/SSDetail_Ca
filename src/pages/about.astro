@@ -1,16 +1,248 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import Gallery from '../components/Gallery.astro';
+import MobileBar from '../components/MobileBar.astro';
+import aboutPhoto from '../assets/images/about-porsche.jpg';
+import { gallery } from '../data/gallery';
+import { business } from '../data/business';
+
+const process = [
+  {
+    title: 'Vehicle Assessment',
+    text: 'We walk the vehicle with you, flag any excessive dirt, pet hair, or trouble spots, and confirm the right package for its condition.',
+  },
+  {
+    title: 'Wash & Decontaminate',
+    text: 'Foam and hand wash, with clay bar and iron decontamination on Decon, Clay, Seal and Premium packages.',
+  },
+  {
+    title: 'Detail & Protect',
+    text: 'Deep interior cleaning, steam, and shampoo where included, plus ceramic sealant or hydrophobic coating on the exterior.',
+  },
+  {
+    title: 'Final Inspection',
+    text: 'Every panel, window, and cupholder gets a final check before your vehicle is handed back.',
+  },
+];
+
+const values = [
+  { title: 'Transparent Pricing', text: "Every tier and add-on is listed — what you're quoted is what you pay." },
+  { title: 'Sized to Your Vehicle', text: 'Sedans, trucks, and 3-rows are priced for the time they actually take.' },
+  // PLAN §3.4: was "Wax and coatings" — the packages use ceramic sealant, not wax.
+  { title: 'Products That Last', text: 'Sealants and coatings built for months of protection, not just one wash.' },
+  { title: 'Care, Not Just a Wash', text: 'Every vehicle gets a full assessment and final inspection, every time.' },
+];
+
+// Real facts replace the original's filler stats (4 tiers / 100% hand applied / 6+ mo).
+const stats = [
+  { n: 'Mobile', l: 'We come to you' },
+  { n: business.serviceAreaShort, l: 'Service area' },
+  { n: '6+ mo', l: 'Sealant protection' },
+];
 ---
 
 <Base
   title="About"
-  description="SS Detail — Showroom Shine — is a small, hands-on detailing operation. The person who quotes the job is the same person doing the work on your car.">
+  description={`SS Detail is a small, owner-operated mobile detailing outfit run by ${business.owners}, serving ${business.serviceArea}. The person who quotes the job is the person doing the work.`}>
   <section class="section">
     <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">About Us</span>
-        <h1>Detail-obsessed, one vehicle at a time</h1>
+      <SectionHead level={1} eyebrow="About Us" title="Detail-obsessed, one vehicle at a time" />
+      <div class="about-grid">
+        <div class="photo">
+          <Image
+            src={aboutPhoto}
+            alt="Grey Porsche 718 detailed in a brick driveway"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 55em) 520px, 100vw"
+            quality={72}
+            loading="eager"
+          />
+        </div>
+        <div class="copy">
+          <p>
+            SS Detail — Showroom Shine — is a small, hands-on detailing operation run by {business.owners} — no call
+            center, no rotating crew of subcontractors. When you book with us, the person who quotes the job is the same
+            person doing the work on your car.
+          </p>
+          <p>
+            We started this because we were tired of seeing "detailing" jobs that were really just a rinse and a vacuum.
+            Every package on our menu is priced around the actual vehicle in front of us — a sedan and a 3-row SUV don't
+            take the same time or product, so they're never priced the same, and add-ons like seat and carpet extraction
+            are listed up front instead of sprung on you at the end.
+          </p>
+          <p>
+            Whether it's a $70 monthly refresh or a full interior-and-exterior restoration, it gets the same attention
+            we'd give our own vehicles — because it's our name on the work, not a franchise's.
+          </p>
+          <ul class="stats">
+            {
+              stats.map((s) => (
+                <li>
+                  <span class="n mono metal-text">{s.n}</span>
+                  <span class="l">{s.l}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
+
+      <ol class="process card">
+        {
+          process.map((step, i) => (
+            <li class="step watermark" data-num={`0${i + 1}`}>
+              <span class="step-num mono">0{i + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <ul class="values">
+        {
+          values.map((v) => (
+            <li class="card card--hover">
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
+
+  <section class="section section--tight" id="work">
+    <div class="wrap">
+      <SectionHead eyebrow="Our Work" title="Our work speaks for itself">
+        A few recent jobs across {business.serviceArea}.
+      </SectionHead>
+      <Gallery items={gallery} />
+    </div>
+  </section>
+
+  <CtaBanner title="Ready to see the difference?" text="Get a free, no-obligation quote for your vehicle today." label="Get a Free Quote" />
+
+  <MobileBar slot="after-footer" />
 </Base>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  .photo :global(img) {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+  .copy p {
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: var(--space-4);
+  }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-6);
+    margin-top: var(--space-5);
+  }
+  .stats .n {
+    display: block;
+    font-size: 26px;
+    line-height: 1.1;
+  }
+  .stats .l {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+
+  .process {
+    margin-top: var(--space-8);
+    overflow: hidden;
+  }
+  .step {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+  .step:last-child {
+    border-bottom: none;
+  }
+  .step::before {
+    right: 16px;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 72px;
+  }
+  .step-num {
+    color: var(--accent-bright);
+    font-size: 20px;
+    min-width: 34px;
+  }
+  .step h3 {
+    font-size: 16px;
+    color: var(--foam);
+  }
+  .step p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .values {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+  }
+  .values li {
+    padding: var(--space-5);
+  }
+  .values h3 {
+    font-size: 15px;
+    color: var(--foam);
+  }
+  .values p {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: var(--space-2);
+  }
+
+  @media (min-width: 40em) {
+    .values {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 55em) {
+    .about-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+    }
+    .photo :global(img) {
+      height: 560px;
+    }
+    .stats .n {
+      font-size: 30px;
+    }
+  }
+  @media (min-width: 70em) {
+    .values {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

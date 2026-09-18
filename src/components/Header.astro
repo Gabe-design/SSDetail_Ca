@@ -1,5 +1,6 @@
 ---
 import Logo from './Logo.astro';
+import ScrollProgress from './ScrollProgress.astro';
 import { business, formatPhone } from '../data/business';
 
 import { navItems } from '../data/nav';
@@ -9,6 +10,7 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
 ---
 
 <header class="site-header" id="site-header">
+  <ScrollProgress />
   <div class="wrap bar">
     <Logo size={34} />
 

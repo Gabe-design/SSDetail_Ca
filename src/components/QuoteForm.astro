@@ -1,0 +1,211 @@
+---
+/**
+ * Quote request form. Works without JavaScript (plain POST to /api/quote →
+ * redirect to /quote/thanks); with JavaScript it validates inline, submits via
+ * fetch and shows the result in place. Package can be pre-selected with
+ * ?package=<slug> (used by "Request This Package" on /services).
+ */
+import { packages } from '../data/packages';
+import { business } from '../data/business';
+
+const vehicleTypes = ['Sedan / Mid-size SUV', 'Truck', '3-Row Vehicle'];
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+const turnstileSiteKey = TURNSTILE_SITE_KEY;
+---
+
+<form class="quote-form card" id="quote-form" method="POST" action="/api/quote" novalidate data-quote-form>
+  <input type="hidden" name="form" value="quote" />
+  <input type="hidden" name="redirect" value="/quote/thanks" />
+  <p class="hp" aria-hidden="true">
+    <label>Leave this field empty <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <div class="field">
+    <label for="q-name">Name</label>
+    <input id="q-name" name="name" type="text" autocomplete="name" required maxlength="80" placeholder="Your full name" />
+    <p class="error" id="q-name-error">Please enter your name.</p>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="q-phone">Phone</label>
+      <input id="q-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" placeholder="(805) 555-0123" />
+      <p class="error" id="q-phone-error">Please enter a phone number we can reach you at.</p>
+    </div>
+    <div class="field">
+      <label for="q-email">Email <span class="optional">(optional)</span></label>
+      <input id="q-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" placeholder="you@example.com" />
+      <p class="error" id="q-email-error">That email doesn't look right.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="q-vehicle">Vehicle Type</label>
+      <select id="q-vehicle" name="vehicle">
+        {vehicleTypes.map((v) => <option value={v}>{v}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="q-package">Package Interested In</label>
+      <select id="q-package" name="package">
+        <option value="">Not sure — need a recommendation</option>
+        {packages.map((p) => <option value={p.slug}>{p.name}</option>)}
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="q-notes">Tell Us About Your Vehicle</label>
+    <textarea
+      id="q-notes"
+      name="notes"
+      maxlength="2000"
+      placeholder="Vehicle make/model, current condition, pet hair, add-ons you're considering, preferred dates, and where in {business.serviceAreaShort} you are..."
+    ></textarea>
+  </div>
+
+  {
+    turnstileSiteKey && (
+      <div class="field">
+        <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="dark" data-size="flexible" />
+      </div>
+    )
+  }
+
+  <button class="btn btn-primary btn-block" type="submit" data-submit>Send Quote Request</button>
+  <p class="status" role="status" aria-live="polite" data-status></p>
+  <p class="hint mono">{business.consultation}</p>
+</form>
+
+{turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<style>
+  .quote-form {
+    padding: var(--space-5);
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .row {
+    display: grid;
+    gap: 0;
+  }
+  .status {
+    display: none;
+    margin-top: var(--space-4);
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    border: 1px solid var(--line-strong);
+  }
+  .status[data-state='error'] {
+    display: block;
+    border-color: var(--danger);
+    color: var(--foam);
+  }
+  .status[data-state='success'] {
+    display: block;
+    border-color: var(--success);
+    color: var(--foam);
+  }
+  .hint {
+    margin-top: var(--space-4);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+  .quote-form[data-busy] [data-submit] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  @media (min-width: 40em) {
+    .quote-form {
+      padding: var(--space-6);
+    }
+    .row {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const packageSelect = form.querySelector<HTMLSelectElement>('#q-package');
+
+    // Pre-select the package from ?package=<slug> (links from /services).
+    const wanted = new URLSearchParams(location.search).get('package');
+    if (wanted && packageSelect && [...packageSelect.options].some((o) => o.value === wanted)) {
+      packageSelect.value = wanted;
+    }
+
+    const fieldOf = (el: Element) => el.closest<HTMLElement>('.field');
+    const setInvalid = (el: HTMLInputElement, invalid: boolean) => {
+      const f = fieldOf(el);
+      if (!f) return;
+      if (invalid) f.setAttribute('data-invalid', '');
+      else f.removeAttribute('data-invalid');
+      el.setAttribute('aria-invalid', String(invalid));
+    };
+    const validate = () => {
+      let ok = true;
+      const name = form.querySelector<HTMLInputElement>('#q-name')!;
+      const phone = form.querySelector<HTMLInputElement>('#q-phone')!;
+      const email = form.querySelector<HTMLInputElement>('#q-email')!;
+      const nameBad = name.value.trim().length < 2;
+      const phoneBad = phone.value.replace(/\D/g, '').length < 7;
+      const emailBad = email.value.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+      setInvalid(name, nameBad);
+      setInvalid(phone, phoneBad);
+      setInvalid(email, emailBad);
+      ok = !(nameBad || phoneBad || emailBad);
+      if (!ok) form.querySelector<HTMLElement>('[data-invalid] input')?.focus();
+      return ok;
+    };
+    for (const el of form.querySelectorAll<HTMLInputElement>('input[required], #q-email')) {
+      el.addEventListener('blur', () => validate());
+    }
+
+    const show = (state: 'error' | 'success', msg: string) => {
+      status.dataset.state = state;
+      status.textContent = msg;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.removeAttribute('data-state');
+      if (!validate()) return;
+      form.setAttribute('data-busy', '');
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; message?: string };
+        if (res.ok && data.ok) {
+          form.reset();
+          show('success', data.message ?? 'Thanks. We got your request and will reply within 24 hours with pricing and dates.');
+          form.querySelector<HTMLElement>('[data-submit]')?.setAttribute('hidden', '');
+        } else {
+          show('error', data.message ?? 'Something went wrong sending your request. Please call or text us instead.');
+        }
+      } catch {
+        show('error', 'We could not reach the server. Please check your connection, or call or text us.');
+      } finally {
+        form.removeAttribute('data-busy');
+        // Turnstile tokens are single-use; ask for a fresh one if the widget is present.
+        (window as any).turnstile?.reset?.();
+      }
+    });
+  }
+</script>

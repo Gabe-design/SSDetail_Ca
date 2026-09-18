@@ -11,31 +11,37 @@ export const business = {
   legalName: null as string | null, // TODO(client): legal name for the © line
   tagline: 'Showroom Shine Auto Detailing',
   shortTagline: 'Showroom Shine Detailing',
+  /** How the old site described the business — used for SEO titles and the hero. */
+  descriptor: 'Mobile Car Detailing',
+  /** Old site: "Complimentary consultation available". */
+  consultation: 'Complimentary consultation with every quote.',
   /** Shown under the wordmark in the logo. */
   owners: 'Samuel Pacich & Shane Hughes',
 
   email: 'sscardetailingca@gmail.com',
   /** E.164 digits only, e.g. "+19495551234". Used for tel:/sms: links and JSON-LD. */
-  phone: null as string | null, // TODO(client)
+  phone: '+18057959932' as string | null, // from ssdetail.com
   /** Set to false if the owner does not want SMS. */
   acceptsSms: true,
 
-  /** e.g. "Orange County, CA" — TODO(client) */
-  serviceArea: null as string | null,
+  /** From ssdetail.com: "Ventura County and LA County". */
+  serviceArea: 'Ventura County & LA County' as string | null,
+  serviceAreaShort: 'Ventura & LA County',
   /** "mobile" (we come to you), "shop" (drop-off), or "both" — TODO(client) */
-  serviceModel: null as 'mobile' | 'shop' | 'both' | null,
+  serviceModel: 'mobile' as 'mobile' | 'shop' | 'both' | null, // "We come to you!" (ssdetail.com)
   /** Street address only if there is a shop customers visit. */
   address: null as { street: string; city: string; region: string; postal: string } | null,
 
   /** Free-form, e.g. "Mon–Sat 8am–6pm" — TODO(client) */
   hours: null as string | null,
 
-  instagram: null as string | null, // TODO(client): full URL
+  instagram: 'https://www.instagram.com/sscardetailingandcleaning' as string | null,
+  instagramHandle: 'sscardetailingandcleaning',
   googleBusiness: null as string | null, // TODO(client): full URL
   googleRating: null as { value: number; count: number } | null,
 
-  /** Canonical site URL — updated at launch (docs/PLAN.md §5). */
-  siteUrl: 'https://ssdetail-ca.workers.dev',
+  /** Canonical site URL — the client's existing domain (currently Squarespace; cutover in Phase 5). */
+  siteUrl: 'https://ssdetail.com',
 
   responseTime: 'We typically reply within 24 hours with pricing and next available dates.',
 } as const;

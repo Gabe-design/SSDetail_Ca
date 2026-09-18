@@ -1,0 +1,174 @@
+---
+/**
+ * Before/after comparison. A full-size range input sits over the images so it
+ * works with mouse, touch and keyboard; the "before" layer is clipped to the
+ * handle position. Same mechanism as the original site, ported.
+ */
+import { Image } from 'astro:assets';
+import before from '../assets/images/compare-before.jpg';
+import after from '../assets/images/compare-after.jpg';
+
+interface Props {
+  caption?: string;
+}
+const { caption = 'Real before/after from a recent job — drag the handle to see the full transformation.' } = Astro.props;
+const imgProps = { widths: [480, 800, 1200], sizes: '(min-width: 70em) 1072px, 100vw', quality: 72, loading: 'lazy' as const };
+---
+
+<figure class="compare">
+  <div class="stage" data-compare>
+    <Image src={after} alt="After detailing: clean floor and seat" class="img" {...imgProps} />
+    <div class="before-wrap" data-compare-before>
+      <Image src={before} alt="Before detailing: dirty floor and seat" class="img" {...imgProps} />
+    </div>
+    <div class="handle" data-compare-handle aria-hidden="true">
+      <div class="knob">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="8 7 3 12 8 17"></polyline>
+          <polyline points="16 7 21 12 16 17"></polyline>
+        </svg>
+      </div>
+    </div>
+    <span class="tag tag-before mono">Before</span>
+    <span class="tag tag-after mono">After</span>
+    <input type="range" min="0" max="100" value="50" class="range" aria-label="Drag to compare before and after" data-compare-range />
+  </div>
+  <figcaption class="muted">{caption}</figcaption>
+</figure>
+
+<style>
+  .compare {
+    margin: 0;
+  }
+  .stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    max-height: 640px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    user-select: none;
+    background: var(--bg-elevated-2);
+    touch-action: pan-y;
+  }
+  .stage :global(.img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    pointer-events: none;
+  }
+  .before-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    clip-path: inset(0 50% 0 0);
+  }
+  .handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    pointer-events: none;
+  }
+  .handle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--foam);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
+  .knob {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--metal);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+  .tag {
+    position: absolute;
+    top: 12px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--foam);
+    background: rgba(10, 10, 10, 0.65);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+  .tag-before {
+    left: 12px;
+  }
+  .tag-after {
+    right: 12px;
+  }
+  .range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 44px;
+    height: 100%;
+  }
+  .range::-moz-range-thumb {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: transparent;
+  }
+  .range:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--accent-bright);
+    outline-offset: -2px;
+    background: transparent;
+  }
+  figcaption {
+    font-size: 13px;
+    margin-top: var(--space-3);
+    max-width: 520px;
+  }
+  @media (min-width: 55em) {
+    .stage {
+      aspect-ratio: 3 / 2;
+    }
+  }
+</style>
+
+<script>
+  for (const stage of document.querySelectorAll<HTMLElement>('[data-compare]')) {
+    const range = stage.querySelector<HTMLInputElement>('[data-compare-range]');
+    const before = stage.querySelector<HTMLElement>('[data-compare-before]');
+    const handle = stage.querySelector<HTMLElement>('[data-compare-handle]');
+    if (!range || !before || !handle) continue;
+    const set = (v: number) => {
+      before.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+      handle.style.left = `${v}%`;
+    };
+    range.addEventListener('input', () => set(Number(range.value)));
+    set(Number(range.value));
+  }
+</script>

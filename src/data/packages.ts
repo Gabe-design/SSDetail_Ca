@@ -9,7 +9,7 @@
 import type { ImageMetadata } from 'astro';
 import maintenanceImg from '../assets/images/package-maintenance.jpg';
 import interiorImg from '../assets/images/package-interior.jpg';
-import deconImg from '../assets/images/package-decon.jpg';
+import deconImg from '../assets/images/package-decon-wheel.jpg'; // client photo: sealed paint + dressed tire
 import premiumImg from '../assets/images/package-premium.jpg';
 
 export interface PriceTier {
@@ -49,6 +49,8 @@ export interface Package {
   featured?: boolean;
   /** Cadence hint for the lineup strip. */
   bestFor: string;
+  /** Former name on ssdetail.com, shown as "also known as" for returning customers. */
+  aka?: string;
 }
 
 const FINE_PRINT = 'Excessive dirt, pet hair, etc. may result in an additional charge.';
@@ -115,6 +117,7 @@ export const packages: Package[] = [
     slug: 'decon-clay-seal',
     name: 'Decon, Clay, Seal',
     shortName: 'Decon, Clay, Seal',
+    aka: 'Protect & Shine',
     from: 185,
     tiers: [{ label: 'All Vehicles', price: 185 }],
     tagline: "Exterior detailing service to decontaminate, protect, and enhance your vehicle's appearance.",
@@ -132,7 +135,8 @@ export const packages: Package[] = [
     addons: [],
     finePrint: FINE_PRINT,
     image: deconImg,
-    imageAlt: 'Glossy sealed paint on a dark vehicle after decontamination',
+    imageAlt: 'Rear quarter of a grey Porsche 718 with sealed, glossy paint and a dressed tire',
+    imagePosition: 'center',
     bestFor: 'Paint protection',
   },
   {
@@ -147,7 +151,7 @@ export const packages: Package[] = [
     ],
     tagline:
       'Interior Detail and Decon, Clay, Seal in one — getting your car to an even better condition than a new car on the lot, with protection that will last.',
-    short: 'Our full interior and exterior reset in one visit — the complete showroom treatment.',
+    short: 'Interior Detail plus Decon, Clay, Seal in one visit. The complete showroom treatment.',
     includes: ['Decon, Clay, Seal', 'Interior Detail'],
     addons: [
       { label: 'Seat Extraction', price: 35 },

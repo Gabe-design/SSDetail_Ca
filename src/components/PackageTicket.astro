@@ -1,0 +1,261 @@
+---
+/**
+ * Pricing "ticket" — the original site's signature card: photo, metal clip tab,
+ * dashed perforation, two-column inclusions, add-on pills, fine print, CTA.
+ * Rendered from src/data/packages.ts; the price box is the most prominent
+ * element after the title (it was 10.5px labels on the original).
+ */
+import { Image } from 'astro:assets';
+import type { Package } from '../data/packages';
+import { formatPrice } from '../data/packages';
+
+interface Props {
+  pkg: Package;
+  eager?: boolean;
+}
+const { pkg, eager = false } = Astro.props;
+---
+
+<article class:list={['ticket', 'card', 'card--hover', { featured: pkg.featured }]} id={pkg.slug}>
+  <div class="media">
+    <Image
+      src={pkg.image}
+      alt={pkg.imageAlt}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 70em) 540px, 100vw"
+      quality={72}
+      loading={eager ? 'eager' : 'lazy'}
+      style={pkg.imagePosition ? `object-position:${pkg.imagePosition}` : undefined}
+    />
+    <span class="clip" aria-hidden="true"></span>
+  </div>
+
+  <header class="head">
+    <div>
+      <h2>{pkg.name}</h2>
+      {pkg.aka && <p class="aka mono">Also known as {pkg.aka}</p>}
+      <p class="tagline">{pkg.tagline}</p>
+    </div>
+    <div class="price-box">
+      <span class="from mono">Starting at</span>
+      {
+        pkg.tiers.map((t, i) => (
+          <div class:list={['tier', { primary: i === 0 }]}>
+            <span class="amount mono metal-text">{formatPrice(t.price)}</span>
+            <span class="label">{t.label}</span>
+          </div>
+        ))
+      }
+    </div>
+  </header>
+
+  <div class="perf" aria-hidden="true"></div>
+
+  <div class="body">
+    <ul class="includes">
+      {pkg.includes.map((item) => <li>{item}</li>)}
+    </ul>
+    {
+      pkg.addons.length > 0 && (
+        <ul class="addons" aria-label="Add-ons">
+          {pkg.addons.map((a) => (
+            <li class="pill mono">
+              +{formatPrice(a.price)} {a.label}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {pkg.note && <p class="note muted">{pkg.note}</p>}
+  </div>
+
+  <footer class="foot">
+    <p class="fine">{pkg.finePrint}</p>
+    <a class="btn btn-primary" href={`/quote?package=${pkg.slug}`}>Request This Package</a>
+  </footer>
+</article>
+
+<style>
+  .ticket {
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-h) + 16px);
+    display: flex;
+    flex-direction: column;
+  }
+  .ticket.featured {
+    border-color: rgba(180, 180, 180, 0.4);
+  }
+  .media {
+    position: relative;
+    background: var(--bg-elevated-2);
+  }
+  .media :global(img) {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    object-position: center;
+  }
+  .clip {
+    position: absolute;
+    top: 0;
+    right: 24px;
+    width: 14px;
+    height: 26px;
+    background: var(--metal);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  }
+  .head {
+    padding: var(--space-5) var(--space-5) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  h2 {
+    font-size: 22px;
+    color: var(--foam);
+  }
+  .aka {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .tagline {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: var(--space-2);
+    max-width: 46ch;
+  }
+  .price-box {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    display: grid;
+    gap: 6px;
+  }
+  .from {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tier {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .amount {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  .tier.primary .amount {
+    font-size: 30px;
+  }
+  .label {
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .perf {
+    border-top: 1px dashed var(--line-strong);
+    margin-inline: var(--space-5);
+  }
+  .body {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    flex: 1;
+  }
+  .includes li {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 6px 0 6px 18px;
+    position: relative;
+    break-inside: avoid;
+  }
+  .includes li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 8px;
+    height: 1px;
+    background: var(--accent-bright);
+  }
+  .addons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+  }
+  .pill {
+    font-size: 12.5px;
+    color: var(--accent-bright);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  .note {
+    font-size: 13px;
+    margin-top: var(--space-3);
+  }
+  .foot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .fine {
+    font-size: 12.5px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .foot .btn {
+    width: 100%;
+  }
+
+  @media (min-width: 40em) {
+    .media :global(img) {
+      height: 300px;
+    }
+    .head {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .price-box {
+      min-width: 210px;
+      flex-shrink: 0;
+    }
+    .includes {
+      columns: 2;
+      column-gap: var(--space-5);
+    }
+    .foot {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .foot .btn {
+      width: auto;
+    }
+  }
+  @media (min-width: 70em) {
+    .media :global(img) {
+      height: 320px;
+    }
+    .includes {
+      columns: 1;
+    }
+    .head {
+      flex-direction: column;
+    }
+    .price-box {
+      min-width: 0;
+    }
+  }
+</style>

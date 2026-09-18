@@ -1,0 +1,49 @@
+---
+/** Home "lineup" card — one per package, rendered from src/data/packages.ts. */
+import type { Package } from '../data/packages';
+import { formatPrice } from '../data/packages';
+interface Props {
+  pkg: Package;
+}
+const { pkg } = Astro.props;
+---
+
+<article class:list={['card', 'card--hover', 'overview', { featured: pkg.featured }]}>
+  <span class="from mono">Starting at</span>
+  <span class="price mono">{formatPrice(pkg.from)}</span>
+  <h3>{pkg.name}</h3>
+  <p>{pkg.short}</p>
+  <a class="btn btn-ghost btn-block" href={`/services#${pkg.slug}`}>View Details</a>
+</article>
+
+<style>
+  .overview {
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .overview.featured {
+    border-color: rgba(180, 180, 180, 0.4);
+  }
+  .from {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .price {
+    font-size: 30px;
+    color: var(--accent-bright);
+    line-height: 1;
+  }
+  h3 {
+    font-size: 18px;
+    color: var(--foam);
+  }
+  p {
+    color: var(--muted);
+    font-size: 14px;
+    flex: 1;
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+// Landing page for the no-JavaScript path when /api/quote fails or rejects a submission.
+import Base from '../../layouts/Base.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { business, formatPhone } from '../../data/business';
+---
+
+<Base title="Request not sent" description="Your quote request could not be sent. Call, text or email us instead.">
+  <section class="section">
+    <div class="wrap">
+      <SectionHead level={1} eyebrow="Quote & Contact" title="That didn't go through">
+        Something went wrong sending your request, or a required field was missing. You can try the form again, or reach
+        us directly.
+      </SectionHead>
+      <div class="actions">
+        {
+          business.phone && (
+            <a class="btn btn-primary" href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`}>
+              {business.acceptsSms ? 'Text' : 'Call'} {formatPhone(business.phone)}
+            </a>
+          )
+        }
+        <a class="btn btn-ghost" href={`mailto:${business.email}`}>Email {business.email}</a>
+        <a class="btn btn-ghost" href="/quote">Back to the form</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+</style>

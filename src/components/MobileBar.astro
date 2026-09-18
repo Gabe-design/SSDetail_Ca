@@ -1,0 +1,86 @@
+---
+/**
+ * Phone-only bottom action bar: "Text us" + "Get a quote". Replaces the
+ * original floating button (which Netlify's badge covered). Hidden while the
+ * quote form is on screen and on desktop, where the header CTA is always visible.
+ */
+import { business, formatPhone } from '../data/business';
+interface Props {
+  /** Hide the bar entirely (e.g. on the quote page). */
+  hidden?: boolean;
+}
+const { hidden = false } = Astro.props;
+---
+
+{
+  !hidden && (
+    <div class="mobile-bar" data-mobile-bar>
+      {business.phone && (
+        <a
+          class="btn btn-ghost"
+          href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`}
+          aria-label={`${business.acceptsSms ? 'Text' : 'Call'} ${formatPhone(business.phone)}`}>
+          {business.acceptsSms ? 'Text us' : 'Call us'}
+        </a>
+      )}
+      <a class="btn btn-primary" href="/quote">
+        Get a quote
+      </a>
+    </div>
+  )
+}
+
+<style>
+  .mobile-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-floating);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: var(--space-2);
+    padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid transparent;
+    border-image: var(--line-gradient) 1;
+    transform: translateY(0);
+    transition: transform 0.25s ease;
+  }
+  .mobile-bar:has(> :only-child) {
+    grid-template-columns: 1fr;
+  }
+  .mobile-bar[data-hidden] {
+    transform: translateY(110%);
+  }
+  @media (min-width: 55em) {
+    .mobile-bar {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-mobile-bar]');
+  if (bar) {
+    // give the page bottom padding so the bar never covers the footer's last line
+    const pad = () => {
+      document.body.style.paddingBottom = window.matchMedia('(min-width: 55em)').matches ? '' : `${bar.offsetHeight}px`;
+    };
+    pad();
+    window.addEventListener('resize', pad);
+    // hide while the hero (with its own CTAs) is in view
+    const hero = document.getElementById('hero');
+    if (hero && 'IntersectionObserver' in window) {
+      new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) bar.setAttribute('data-hidden', '');
+          else bar.removeAttribute('data-hidden');
+        },
+        { threshold: 0.35 },
+      ).observe(hero);
+    }
+  }
+</script>
