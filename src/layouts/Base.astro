@@ -10,6 +10,7 @@ import '../styles/base.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
+import ScrollOffer from '../components/ScrollOffer.astro';
 import { business } from '../data/business';
 import { CF_BEACON_TOKEN } from 'astro:env/client';
 
@@ -21,9 +22,11 @@ interface Props {
   ogImage?: string;
   /** Set on the home page so the title is "SS Detail — Showroom Shine…" rather than "Home | SS Detail". */
   isHome?: boolean;
+  /** Scroll-triggered quote offer; off on the quote pages, where the visitor is already converting. */
+  offer?: boolean;
 }
 
-const { title, description, ogImage = '/og.jpg', isHome = false } = Astro.props;
+const { title, description, ogImage = '/og.jpg', isHome = false, offer = true } = Astro.props;
 const fullTitle = isHome ? `${business.name} — ${business.tagline}` : `${title} | ${business.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? business.siteUrl);
 const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
@@ -56,6 +59,17 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     <link rel="sitemap" href="/sitemap-index.xml" />
     <JsonLd />
     <slot name="head" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        if (!('requestAnimationFrame' in window)) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('js-reveal');
+        setTimeout(function () {
+          if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js-reveal');
+        }, 4000);
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -65,6 +79,7 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     </main>
     <Footer />
     <slot name="after-footer" />
+    {offer && <ScrollOffer />}
     {
       CF_BEACON_TOKEN && (
         <script
@@ -77,6 +92,10 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     }
   </body>
 </html>
+
+<script>
+  import '../scripts/reveal';
+</script>
 
 <style is:global>
   body {

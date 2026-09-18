@@ -25,6 +25,7 @@ const faqs = [
 ---
 
 <Base
+  offer={false}
   title="Get a Free Quote"
   description={`Tell us about your vehicle and the package you want. We reply within 24 hours with exact pricing and the next available dates. Mobile detailing across ${business.serviceArea}.`}>
   <section class="section">
@@ -36,7 +37,7 @@ const faqs = [
       <div class="grid">
         <QuoteForm />
 
-        <aside class="side">
+        <aside class="side reveal" style="transition-delay:100ms">
           {
             business.phone && (
               <div class="card contact">
@@ -94,8 +95,8 @@ const faqs = [
       <SectionHead eyebrow="Good to know" title="Before you book" />
       <dl class="faq">
         {
-          faqs.map((f) => (
-            <div class="card qa">
+          faqs.map((f, i) => (
+            <div class="card qa reveal" style={`transition-delay:${(i % 2) * 80}ms`}>
               <dt>{f.q}</dt>
               <dd>{f.a}</dd>
             </div>

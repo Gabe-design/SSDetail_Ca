@@ -11,7 +11,7 @@ import { packages, formatPrice } from '../data/packages';
   <ul>
     {
       packages.map((p, i) => (
-        <li class:list={['card', 'card--hover', { featured: p.featured }]}>
+        <li class:list={['card', 'card--hover', 'reveal', { featured: p.featured }]} style={`transition-delay:${i * 60}ms`}>
           <a href={`#${p.slug}`}>
             <span class="idx mono">0{i + 1}</span>
             <span class="name">{p.name}</span>

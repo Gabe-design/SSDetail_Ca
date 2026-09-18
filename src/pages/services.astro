@@ -25,7 +25,7 @@ import { business } from '../data/business';
   <section class="section section--tight">
     <div class="wrap">
       <div class="tickets">
-        {packages.map((p, i) => <PackageTicket pkg={p} eager={i === 0} />)}
+        {packages.map((p, i) => <PackageTicket pkg={p} eager={i === 0} delay={(i % 2) * 80} />)}
       </div>
     </div>
   </section>

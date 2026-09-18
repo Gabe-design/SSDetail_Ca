@@ -12,11 +12,16 @@ import { formatPrice } from '../data/packages';
 interface Props {
   pkg: Package;
   eager?: boolean;
+  /** reveal stagger, ms */
+  delay?: number;
 }
-const { pkg, eager = false } = Astro.props;
+const { pkg, eager = false, delay = 0 } = Astro.props;
 ---
 
-<article class:list={['ticket', 'card', 'card--hover', { featured: pkg.featured }]} id={pkg.slug}>
+<article
+  class:list={['ticket', 'card', 'card--hover', 'reveal', { featured: pkg.featured }]}
+  id={pkg.slug}
+  style={delay ? `transition-delay:${delay}ms` : undefined}>
   <div class="media">
     <Image
       src={pkg.image}

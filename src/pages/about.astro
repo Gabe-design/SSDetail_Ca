@@ -51,7 +51,7 @@ const stats = [
     <div class="wrap">
       <SectionHead level={1} eyebrow="About Us" title="Detail-obsessed, one vehicle at a time" />
       <div class="about-grid">
-        <div class="photo">
+        <div class="photo reveal">
           <Image
             src={aboutPhoto}
             alt="Grey Porsche 718 detailed in a brick driveway"
@@ -65,7 +65,7 @@ const stats = [
             fetchpriority="high"
           />
         </div>
-        <div class="copy">
+        <div class="copy reveal" style="transition-delay:100ms">
           <p>
             SS Detail — Showroom Shine — is a small, hands-on detailing operation run by {business.owners} — no call
             center, no rotating crew of subcontractors. When you book with us, the person who quotes the job is the same
@@ -95,7 +95,7 @@ const stats = [
       </div>
 
       <h2 class="visually-hidden">How a detail goes</h2>
-      <ol class="process card">
+      <ol class="process card reveal">
         {
           process.map((step, i) => (
             <li class="step watermark" data-num={`0${i + 1}`}>
@@ -112,8 +112,8 @@ const stats = [
       <h2 class="visually-hidden">What you can count on</h2>
       <ul class="values">
         {
-          values.map((v) => (
-            <li class="card card--hover">
+          values.map((v, i) => (
+            <li class="card card--hover reveal" style={`transition-delay:${i * 80}ms`}>
               <h3>{v.title}</h3>
               <p>{v.text}</p>
             </li>

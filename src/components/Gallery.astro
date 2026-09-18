@@ -13,7 +13,7 @@ const { items, eager = 0 } = Astro.props;
 <ul class="gallery">
   {
     items.map((item, i) => (
-      <li class="card card--hover">
+      <li class="card card--hover reveal" style={`transition-delay:${(i % 3) * 80}ms`}>
         <figure>
           <Image
             src={item.image}

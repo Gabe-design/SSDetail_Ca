@@ -309,7 +309,8 @@ Total: roughly 4–6 working days of build, plus client turnaround for the facts
 | 1 Parity port | Done | All four pages + 404, real routes, `<Image>` everywhere |
 | 2 Mobile polish | Done | In-theme menu, bottom action bar, lineup strip, two-up tickets, 2-col gallery, scroll progress bar, 44 px targets, AA fine print |
 | 3 Form → Resend | Built, untested against Resend | `POST /api/quote`: validation, honeypot, optional Turnstile, idempotent send, JSON or redirect. Needs a Resend API key in `.dev.vars` / Worker secrets for the first real send |
-| 4 SEO/meta | Partly | Per-page titles/descriptions, OG image, favicons, sitemap done. **To do:** JSON-LD LocalBusiness, robots.txt, Cloudflare Web Analytics |
+| 4 SEO/meta | Done | Titles/descriptions, OG image, favicons, sitemap, JSON-LD AutoWash, robots.txt, analytics beacon (needs `CF_BEACON_TOKEN`). Lighthouse mobile 91–98 perf, 100 a11y/BP/SEO |
+| Extras | Done | Scroll progress bar under the navbar · before/after: sweep on arrival, vertical handle + hold-to-compare on phones · scroll reveal (fade-up) on sections · scroll-triggered quote offer dialog (60%, once per 30 days) |
 | 5 Launch | Not started | Connect repo in Workers Builds → set secrets → verify ssdetail.com in Resend → custom domain → DNS cutover from Squarespace → retire Netlify |
 
 Run locally: `npm run dev` (Node 22). Test the endpoint with a browser-like Origin header (Astro's CSRF check rejects bare curl): `curl -H "Origin: http://127.0.0.1:4321" -H "Accept: application/json" -F name=Test -F phone=8055551234 http://127.0.0.1:4321/api/quote`.

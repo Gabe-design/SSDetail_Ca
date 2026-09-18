@@ -307,7 +307,9 @@ const imgProps = { width: 1200, widths: [480, 800, 1200], sizes: '(min-width: 70
       if (onKnob || !vertical.matches) {
         dragging = true;
         stage.setAttribute('data-dragging', '');
-        stage.setPointerCapture(e.pointerId);
+        try {
+          stage.setPointerCapture(e.pointerId);
+        } catch {}
         set(posFromEvent(e));
         e.preventDefault();
         return;

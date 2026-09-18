@@ -4,11 +4,15 @@ import type { Package } from '../data/packages';
 import { formatPrice } from '../data/packages';
 interface Props {
   pkg: Package;
+  /** reveal stagger, ms */
+  delay?: number;
 }
-const { pkg } = Astro.props;
+const { pkg, delay = 0 } = Astro.props;
 ---
 
-<article class:list={['card', 'card--hover', 'overview', { featured: pkg.featured }]}>
+<article
+  class:list={['card', 'card--hover', 'overview', 'reveal', { featured: pkg.featured }]}
+  style={delay ? `transition-delay:${delay}ms` : undefined}>
   <span class="from mono">Starting at</span>
   <span class="price mono">{formatPrice(pkg.from)}</span>
   <h3>{pkg.name}</h3>

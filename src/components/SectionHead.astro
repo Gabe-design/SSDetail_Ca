@@ -11,7 +11,7 @@ const { eyebrow, title, level = 2, id } = Astro.props;
 const Tag = level === 1 ? 'h1' : 'h2';
 ---
 
-<div class="section-head">
+<div class="section-head reveal">
   <span class="eyebrow">{eyebrow}</span>
   <Tag id={id}>{title}</Tag>
   {Astro.slots.has('default') && <p><slot /></p>}

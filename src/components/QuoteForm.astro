@@ -13,7 +13,7 @@ import { TURNSTILE_SITE_KEY } from 'astro:env/client';
 const turnstileSiteKey = TURNSTILE_SITE_KEY;
 ---
 
-<form class="quote-form card" id="quote-form" method="POST" action="/api/quote" novalidate data-quote-form>
+<form class="quote-form card reveal" id="quote-form" method="POST" action="/api/quote" novalidate data-quote-form>
   <input type="hidden" name="form" value="quote" />
   <input type="hidden" name="redirect" value="/quote/thanks" />
   <p class="hp" aria-hidden="true">

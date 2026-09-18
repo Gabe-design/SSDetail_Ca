@@ -7,6 +7,7 @@ import CtaBanner from '../components/CtaBanner.astro';
 import PackageOverview from '../components/PackageOverview.astro';
 import Gallery from '../components/Gallery.astro';
 import MobileBar from '../components/MobileBar.astro';
+import Reveal from '../components/Reveal.astro';
 import { packages } from '../data/packages';
 import { gallery } from '../data/gallery';
 import { business, formatPhone } from '../data/business';
@@ -36,14 +37,16 @@ const why = [
   <section class="section">
     <div class="wrap">
       <SectionHead eyebrow="See The Difference" title="Drag to compare" />
-      <CompareSlider />
+      <Reveal>
+        <CompareSlider />
+      </Reveal>
     </div>
   </section>
 
   {
     business.serviceModel === 'mobile' && (
       <div class="mobile-strip">
-        <div class="wrap inner">
+        <div class="wrap inner reveal">
           <p class="mono lead">// We come to you</p>
           <p>
             Fully mobile detailing across <strong>{business.serviceArea}</strong>. We work in your driveway or at your
@@ -68,7 +71,7 @@ const why = [
       <div class="why-grid">
         {
           why.map((w, i) => (
-            <article class="card card--hover watermark why-card" data-num={`0${i + 1}`}>
+            <article class="card card--hover watermark why-card reveal" data-num={`0${i + 1}`} style={`transition-delay:${i * 80}ms`}>
               <span class="num mono">0{i + 1}</span>
               <h3>{w.title}</h3>
               <p>{w.text}</p>
@@ -89,7 +92,7 @@ const why = [
     <div class="wrap">
       <SectionHead eyebrow="The Lineup" title="Four ways to a cleaner ride" />
       <div class="lineup">
-        {packages.map((p) => <PackageOverview pkg={p} />)}
+        {packages.map((p, i) => <PackageOverview pkg={p} delay={i * 80} />)}
       </div>
     </div>
   </section>
@@ -100,7 +103,7 @@ const why = [
         Detailed on location, in the owners' driveways across {business.serviceAreaShort}.
       </SectionHead>
       <Gallery items={gallery.slice(0, 6)} />
-      <p class="more">
+      <p class="more reveal">
         <a class="btn btn-ghost" href="/about#work">See more of our work</a>
         {
           business.instagram && (

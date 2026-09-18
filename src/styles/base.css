@@ -379,3 +379,31 @@ ol {
 html.menu-open {
   overflow: hidden;
 }
+
+/* ---------- scroll reveal (fade-up entrance) ----------
+   Hidden state is scoped to .js-reveal, added by the layout's inline script
+   before paint and only when JavaScript and motion are available. Without it
+   the HTML renders exactly as written. */
+.reveal {
+  transition:
+    opacity 700ms ease-out,
+    transform 700ms ease-out;
+}
+
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
