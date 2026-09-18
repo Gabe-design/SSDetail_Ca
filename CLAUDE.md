@@ -14,6 +14,9 @@
 - Scroll offer dialog (`ScrollOffer.astro`): opens once at 60% scroll, remembered 30 days in localStorage
   (`ssd-offer-seen`), always shows in dev, off on the quote pages via `<Base offer={false}>`.
 - Both were ported from the Moss & Ross site (mr-digital: Reveal.tsx, DemoOffer.tsx) with the same timings.
+- Work videos: `src/data/videos.ts` + `VideoReel.astro`; encoded MP4s in `public/videos` (720×1280, H.264, ≤10 MB each,
+  Workers' static-asset limit is 25 MiB per file). Raw client files stay in `legacy/client-videos` (git-ignored).
+  ffmpeg (winget Gyan.FFmpeg) is on this machine; the recipe is in videos.ts.
 - Cloudflare: Workers with static assets via `@astrojs/cloudflare`; `session: false` in astro.config so no KV is needed.
 
 Astro docs: https://docs.astro.build (routing, components, styling, images).

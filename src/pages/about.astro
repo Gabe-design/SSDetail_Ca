@@ -5,6 +5,7 @@ import SectionHead from '../components/SectionHead.astro';
 import CtaBanner from '../components/CtaBanner.astro';
 import Gallery from '../components/Gallery.astro';
 import MobileBar from '../components/MobileBar.astro';
+import VideoReel from '../components/VideoReel.astro';
 import aboutPhoto from '../assets/images/about-porsche.jpg';
 import { gallery } from '../data/gallery';
 import { business } from '../data/business';
@@ -129,6 +130,15 @@ const stats = [
         A few recent jobs across {business.serviceArea}.
       </SectionHead>
       <Gallery items={gallery} />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <SectionHead eyebrow="In motion" title="A detail, start to finish">
+        Short clips from recent jobs. Sound is off until you tap the speaker.
+      </SectionHead>
+      <VideoReel />
     </div>
   </section>
 

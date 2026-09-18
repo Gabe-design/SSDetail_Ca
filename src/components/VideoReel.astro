@@ -1,0 +1,240 @@
+---
+/**
+ * Short work clips in 9:16 cards. A snap-scrolling row on phones, three-up on
+ * desktop. Each clip plays muted while it is mostly in view and pauses when it
+ * leaves; tap the video to pause/play, tap the speaker to hear it (only one
+ * clip is unmuted at a time). No autoplay under reduced motion or Data Saver:
+ * the poster shows with a play button instead.
+ */
+import { getImage } from 'astro:assets';
+import { videos } from '../data/videos';
+
+const items = await Promise.all(
+  videos.map(async (v) => ({
+    ...v,
+    posterUrl: (await getImage({ src: v.poster, width: 720, height: 1280, fit: 'cover', format: 'webp', quality: 70 })).src,
+  })),
+);
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+---
+
+<div class="reel" data-reel>
+  <ul>
+    {
+      items.map((v, i) => (
+        <li class="card card--hover reveal" style={`transition-delay:${i * 80}ms`}>
+          <figure>
+            <div class="frame" data-clip>
+              <video
+                src={v.src}
+                poster={v.posterUrl}
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label={`${v.title} (video, no narration)`}
+                data-video
+              />
+              <button class="play" type="button" aria-label={`Play ${v.title}`} data-play>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+              <button class="sound" type="button" aria-label="Unmute" aria-pressed="false" data-sound>
+                <svg class="ico-muted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 5 6 9H2v6h4l5 4V5z" /><path d="m23 9-6 6M17 9l6 6" />
+                </svg>
+                <svg class="ico-sound" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 5 6 9H2v6h4l5 4V5z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" />
+                </svg>
+              </button>
+              <span class="length mono" aria-hidden="true">{mmss(v.duration)}</span>
+            </div>
+            <figcaption>
+              <span class="title">{v.title}</span>
+              <span class="muted">{v.caption}</span>
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .reel {
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .reel::-webkit-scrollbar {
+    display: none;
+  }
+  ul {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 340px);
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+  }
+  li {
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+  figure {
+    margin: 0;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    background: var(--bg-elevated-2);
+  }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+  }
+  .play,
+  .sound {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border: none;
+    color: var(--bg);
+    cursor: pointer;
+  }
+  .play {
+    left: 50%;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--metal);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    padding-left: 4px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .frame[data-playing] .play {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    pointer-events: none;
+  }
+  .sound {
+    right: 10px;
+    bottom: 10px;
+    width: var(--tap);
+    height: var(--tap);
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.7);
+    color: var(--foam);
+    border: 1px solid var(--line-strong);
+    backdrop-filter: blur(6px);
+  }
+  .sound .ico-sound,
+  .sound[aria-pressed='true'] .ico-muted {
+    display: none;
+  }
+  .sound[aria-pressed='true'] .ico-sound {
+    display: block;
+  }
+  .length {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--foam);
+    background: rgba(10, 10, 10, 0.65);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+  figcaption {
+    display: grid;
+    gap: 2px;
+    padding: 12px 14px 14px;
+    font-size: 13px;
+  }
+  .title {
+    color: var(--foam);
+    font-weight: 600;
+  }
+  @media (min-width: 55em) {
+    .reel {
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+    ul {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      padding-bottom: 0;
+    }
+  }
+</style>
+
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = !!(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  const autoplay = !reduced && !saveData;
+
+  const clips = [...document.querySelectorAll<HTMLElement>('[data-clip]')];
+  const videoOf = (clip: HTMLElement) => clip.querySelector<HTMLVideoElement>('[data-video]')!;
+  const mark = (clip: HTMLElement) => {
+    const v = videoOf(clip);
+    if (v.paused) clip.removeAttribute('data-playing');
+    else clip.setAttribute('data-playing', '');
+  };
+
+  for (const clip of clips) {
+    const video = videoOf(clip);
+    const sound = clip.querySelector<HTMLButtonElement>('[data-sound]')!;
+    const play = clip.querySelector<HTMLButtonElement>('[data-play]')!;
+
+    video.addEventListener('play', () => mark(clip));
+    video.addEventListener('pause', () => mark(clip));
+
+    const toggle = () => {
+      if (video.paused) video.play().catch(() => {});
+      else video.pause();
+    };
+    play.addEventListener('click', toggle);
+    video.addEventListener('click', toggle);
+
+    sound.addEventListener('click', () => {
+      const unmute = video.muted;
+      // one voice at a time
+      for (const other of clips) {
+        const ov = videoOf(other);
+        ov.muted = true;
+        other.querySelector('[data-sound]')?.setAttribute('aria-pressed', 'false');
+        other.querySelector('[data-sound]')?.setAttribute('aria-label', 'Unmute');
+      }
+      video.muted = !unmute;
+      sound.setAttribute('aria-pressed', String(unmute));
+      sound.setAttribute('aria-label', unmute ? 'Mute' : 'Unmute');
+      if (unmute && video.paused) video.play().catch(() => {});
+    });
+  }
+
+  // Play while mostly in view, pause when out. Muted, so browsers allow it.
+  if (autoplay && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const video = videoOf(e.target as HTMLElement);
+          if (e.intersectionRatio >= 0.6) video.play().catch(() => {});
+          else if (!video.paused) video.pause();
+        }
+      },
+      { threshold: [0, 0.6] },
+    );
+    clips.forEach((c) => io.observe(c));
+  }
+</script>
