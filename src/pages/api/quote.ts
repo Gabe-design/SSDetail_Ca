@@ -13,6 +13,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { RESEND_API_KEY, RESEND_FROM, QUOTE_TO, TURNSTILE_SECRET_KEY, SEND_CUSTOMER_CONFIRMATION } from 'astro:env/server';
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { business } from '../../data/business';
 import { parseQuote, businessEmail, customerEmail, idempotencyKey } from '../../lib/quote';
 
@@ -29,10 +30,14 @@ function respond(request: Request, ok: boolean, message: string, status: number,
   return Response.redirect(new URL(redirectTo, request.url), 303);
 }
 
+// Turnstile is enforced only when the widget was built into the form (site key) AND the
+// secret is on the Worker. A secret without a site key would otherwise reject every request.
+const turnstileEnabled = Boolean(TURNSTILE_SECRET_KEY && TURNSTILE_SITE_KEY);
+
 async function verifyTurnstile(token: string | null, ip: string | null): Promise<boolean> {
-  if (!TURNSTILE_SECRET_KEY) return true; // not configured (local dev / before Phase 5)
+  if (!turnstileEnabled) return true;
   if (!token) return false;
-  const body = new URLSearchParams({ secret: TURNSTILE_SECRET_KEY, response: token });
+  const body = new URLSearchParams({ secret: TURNSTILE_SECRET_KEY!, response: token });
   if (ip) body.set('remoteip', ip);
   const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body });
   const data = (await res.json().catch(() => ({}))) as { success?: boolean };
