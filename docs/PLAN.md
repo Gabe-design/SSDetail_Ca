@@ -1,6 +1,6 @@
 # SS Detail — Site Improvement Plan
 
-_Assessment, technology recommendation and build plan. Written 2026-09-17, before implementation._
+_Assessment, technology recommendation and build plan. Written 2026-09-17, before implementation. Updated the same day after Phases 0–3 (see §9)._
 
 Live site reviewed: https://fancy-bienenstitch-c11f2e.netlify.app/
 Starting point: `C:\Users\Gabri\SSDetail` (was empty — see §1)
@@ -27,20 +27,27 @@ Target: GitHub `Gabe-design/SSDetail_Ca` → Cloudflare Workers (static assets +
 6. A custom domain will exist and its DNS will be on Cloudflare (required for Workers custom domains and for Resend domain verification). `ssdetailca` suggests `ssdetail.ca` or `ssdetailca.com` — unconfirmed.
 7. English only, one location/service area.
 
-### Missing information that materially affects the work
+### Facts confirmed from the old site (ssdetail.com, Squarespace) and Instagram
+- Phone **805-795-9932**; email sscardetailingca@gmail.com (the old contact page also lists sscardetailing@gmail.com)
+- **Mobile detailing, "We come to you", Ventura County and LA County** (old site header; Instagram bio says the same)
+- Owners **Sammy (Samuel) Pacich & Shane Hughes**; Instagram **@sscardetailingandcleaning**, Linktree linktr.ee/sscardetailingca
+- Domain **ssdetail.com** (currently on Squarespace); the old site called the business "SS Mobile Car Detailing"
+- Old package names: Maintenance · Classic Interior Detail · **Protect and Shine** (now "Decon, Clay, Seal") · Interior & Exterior Detail Premium. Same prices and add-ons as the Netlify site.
+- "Complimentary consultation available"
+- 21 photos of finished work (Porsche 911/718/992, Maybach GLS, Bentley Continental, BMW M3, Raptor, Supra…), saved in `legacy/old-site/images`, plus four Porsche 718 shots and the logo file from the client in `legacy/client-photos`.
+
+### Still missing
 | # | Missing | Why it matters | Blocks |
 |---|---|---|---|
-| 1 | **Domain name + who controls DNS/registrar** | Workers custom domain; Resend can only send from a verified domain (`onboarding@resend.dev` is test-only) | Phase 3 send-from address, Phase 5 cutover |
-| 2 | **Service area / city, and mobile (we come to you) vs. shop drop-off** | Nowhere on the current site. Copy says "pickup" / "the shop", photos show driveways + a van. Drives hero copy, title tag, JSON-LD, footer | Copy in Phase 2 (can ship with placeholders) |
-| 3 | **Phone number, and whether the owner wants texts** | No phone anywhere today. `tel:`/`sms:` CTAs are the single biggest conversion lever for a detailer | Phase 2 CTAs |
-| 4 | **Cloudflare account and Resend account** — client's or yours? | Determines who owns secrets, billing, DNS. Both have free tiers that cover this site | Phase 0 deploy, Phase 3 |
-| 5 | Instagram / Google Business Profile links; any existing reviews | Social proof section, footer, JSON-LD `sameAs` | Nice-to-have; ship without |
-| 6 | Hours, legal business name for the footer/copyright | Footer, JSON-LD | Ship with placeholders |
-| 7 | Should customers get an automatic confirmation email? | Second Resend template; needs an email field (today "Phone or Email" is one field) | Phase 3 |
-| 8 | Is the Netlify site the client's to retire/redirect? | Avoid two live copies (duplicate content, split traffic) | Phase 5 |
-| 9 | Are current prices/add-ons current? (Interior add-ons +$50 vs Premium +$35 — intentional?) | Content correctness | Phase 1 data files |
-
-Nothing here blocks starting Phases 0–2.
+| 1 | **Who controls DNS for ssdetail.com** (Squarespace domains? registrar login?) | Nameservers must move to Cloudflare for the Workers custom domain and the Resend sending domain | Phase 5 cutover |
+| 2 | **Cloudflare account and Resend account** (client's or yours), plus a Resend API key | Secrets, billing, DNS records | Deploy + first real email test |
+| 3 | Hours, legal business name for the © line | Footer, JSON-LD | Ship with fallbacks (© SS Detail) |
+| 4 | Google Business Profile link and any reviews | Social proof section, JSON-LD `sameAs` | Nice-to-have |
+| 5 | Should customers get an automatic confirmation email? | `SEND_CUSTOMER_CONFIRMATION` env flag, off by default | Phase 5 |
+| 6 | Is the Netlify site the client's to retire/redirect? | Avoid two live copies | Phase 5 |
+| 7 | Interior add-ons +$50 vs Premium +$35: intentional bundle discount? | Content correctness | Client sign-off |
+| 8 | Headshots (two people in suits) were in Downloads next to the Porsche photos: are they the owners, and should they go on the About page? | About page trust | Optional |
+| 9 | Business name on the site: **SS Detail** (Netlify site) vs **SS Car Detailing** (logo, Instagram) vs **SS Mobile Car Detailing** (old site) | Wordmark, title tag, JSON-LD name | Client decision; site currently says SS Detail |
 
 ---
 
@@ -124,6 +131,17 @@ Priorities: **mobile first**, then reliability, then polish. Each item says what
 | Add-ons +$50 (Interior) vs +$35 (Premium) | Keep, label "$35 with Premium" if intentional | Reads as an error otherwise — needs client confirmation |
 
 Everything else (headlines, package descriptions, inclusions, about story, process, values) is carried over verbatim.
+
+Applied during Phases 1–3 (in addition to the table above):
+| Current | Now | Reason |
+|---|---|---|
+| "No surprises at pickup" (why card) · "sprung on you at pickup" (about) | "…when we hand back the keys" · "…at the end" | The business is mobile; there is no pickup |
+| "A few from the shop" (gallery heading) | "A few from the road" + "Detailed on location…" | Same: no shop |
+| About stats "4 Service Tiers / 100% Hand Applied / 6+ mo" | "Mobile · We come to you" / "Ventura & LA County" / "6+ mo sealant" | Real facts instead of filler |
+| Gallery: 3 photos | 12 client photos (9 from ssdetail.com, 3 from the client) with real captions | Stronger proof; all client-owned |
+| Decon, Clay, Seal ticket photo | Client's Porsche 718 wheel/paint shot; ticket shows "Also known as Protect & Shine" | Matches the package; helps returning customers |
+| Premium lineup card (didn't exist) | New one-line description | Card needed a blurb |
+| New: FAQ on /quote, "We come to you" strip on /, phone/text everywhere, owners under the wordmark | | Facts from the old site; owner request |
 
 ### 3.5 Accessibility
 - One `<main>` per page (four today), landmark roles, skip link, heading order (H1 per page — the sub-pages have none today).
@@ -282,6 +300,19 @@ Lighthouse ≥ 95 ×4 on mobile; cross-browser pass; content sign-off from the c
 Total: roughly 4–6 working days of build, plus client turnaround for the facts in §0.
 
 ---
+
+## 9. Status (2026-09-17)
+
+| Phase | Status | Notes |
+|---|---|---|
+| 0 Scaffold | Done | Astro 7 + Cloudflare adapter, tokens ported, brand assets generated, repo `Gabe-design/SSDetail_Ca` (private) |
+| 1 Parity port | Done | All four pages + 404, real routes, `<Image>` everywhere |
+| 2 Mobile polish | Done | In-theme menu, bottom action bar, lineup strip, two-up tickets, 2-col gallery, scroll progress bar, 44 px targets, AA fine print |
+| 3 Form → Resend | Built, untested against Resend | `POST /api/quote`: validation, honeypot, optional Turnstile, idempotent send, JSON or redirect. Needs a Resend API key in `.dev.vars` / Worker secrets for the first real send |
+| 4 SEO/meta | Partly | Per-page titles/descriptions, OG image, favicons, sitemap done. **To do:** JSON-LD LocalBusiness, robots.txt, Cloudflare Web Analytics |
+| 5 Launch | Not started | Connect repo in Workers Builds → set secrets → verify ssdetail.com in Resend → custom domain → DNS cutover from Squarespace → retire Netlify |
+
+Run locally: `npm run dev` (Node 22). Test the endpoint with a browser-like Origin header (Astro's CSRF check rejects bare curl): `curl -H "Origin: http://127.0.0.1:4321" -H "Accept: application/json" -F name=Test -F phone=8055551234 http://127.0.0.1:4321/api/quote`.
 
 ## 8. Decisions needed from you before Phase 0
 1. Approve the stack (Astro on Workers) — or say "plain HTML" and the plan adapts (same structure minus components/data files).
