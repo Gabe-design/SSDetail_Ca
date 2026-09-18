@@ -75,9 +75,9 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
     position: sticky;
     top: 0;
     z-index: var(--z-header);
-    background: rgba(10, 10, 10, 0.88);
-    backdrop-filter: blur(10px);
+    background: rgba(10, 10, 10, 0.94);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid transparent;
     border-image: var(--line-gradient) 1;
   }
@@ -219,6 +219,9 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
   }
 
   @media (min-width: 55em) {
+    .site-header {
+      background: rgba(10, 10, 10, 0.88);
+    }
     .links {
       display: flex;
       gap: 28px;
