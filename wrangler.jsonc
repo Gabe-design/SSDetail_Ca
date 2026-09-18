@@ -1,8 +1,8 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "ssdetail-ca",
 	"compatibility_date": "2026-09-17",
 	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "ssdetail-ca",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"directory": "./dist",
@@ -10,5 +10,18 @@
 	},
 	"observability": {
 		"enabled": true
+	},
+	// Plain (non-secret) settings. Secrets (RESEND_API_KEY, TURNSTILE_SECRET_KEY) are set with
+	// `npx wrangler secret bulk .dev.vars` or in the dashboard, never here.
+	"vars": {
+		"QUOTE_TO": "sscardetailingca@gmail.com",
+		// Switch to "SS Detail Website <quotes@ssdetail.com>" once the domain is verified in Resend.
+		"RESEND_FROM": "SS Detail Website <onboarding@resend.dev>",
+		"SEND_CUSTOMER_CONFIRMATION": "false"
 	}
+	// Custom domain (docs/LAUNCH.md step 5) — uncomment when ssdetail.com is on Cloudflare:
+	// "routes": [
+	// 	{ "pattern": "ssdetail.com", "custom_domain": true },
+	// 	{ "pattern": "www.ssdetail.com", "custom_domain": true }
+	// ]
 }
