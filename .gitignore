@@ -12,3 +12,6 @@ Thumbs.db
 npm-debug.log*
 # editors
 .idea/
+
+# raw client videos (90 MB each) stay local; encoded versions live in public/videos
+legacy/client-videos/
