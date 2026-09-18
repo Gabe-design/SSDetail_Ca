@@ -41,6 +41,6 @@ export const videos: WorkVideo[] = [
     poster: ramPoster,
     title: 'Ram, finished exterior',
     caption: 'Walkaround after an exterior detail.',
-    duration: 17,
+    duration: 16,
   },
 ];
