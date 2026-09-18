@@ -55,10 +55,14 @@ const stats = [
           <Image
             src={aboutPhoto}
             alt="Grey Porsche 718 detailed in a brick driveway"
-            widths={[480, 800, 1200]}
+            width={1040}
+            height={1120}
+            fit="cover"
+            widths={[480, 800, 1040]}
             sizes="(min-width: 55em) 520px, 100vw"
-            quality={72}
+            quality={62}
             loading="eager"
+            fetchpriority="high"
           />
         </div>
         <div class="copy">
@@ -90,6 +94,7 @@ const stats = [
         </div>
       </div>
 
+      <h2 class="visually-hidden">How a detail goes</h2>
       <ol class="process card">
         {
           process.map((step, i) => (
@@ -104,6 +109,7 @@ const stats = [
         }
       </ol>
 
+      <h2 class="visually-hidden">What you can count on</h2>
       <ul class="values">
         {
           values.map((v) => (

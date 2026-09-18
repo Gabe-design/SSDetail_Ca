@@ -28,6 +28,8 @@ export default defineConfig({
       SEND_CUSTOMER_CONFIRMATION: envField.boolean({ context: 'server', access: 'public', optional: true, default: false }),
       /** Turnstile widget site key (safe to expose). Widget renders only when set. */
       TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
+      /** Cloudflare Web Analytics token (dashboard → Analytics & Logs → Web Analytics). Beacon renders only when set. */
+      CF_BEACON_TOKEN: envField.string({ context: 'client', access: 'public', optional: true }),
     },
   },
 });

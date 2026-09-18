@@ -19,7 +19,7 @@ interface Props {
 const { size = 34, href = '/', class: className, markOnly = false, hideOwners = false } = Astro.props;
 ---
 
-<a class:list={['logo', className]} href={href} aria-label={`${business.name} — home`}>
+<a class:list={['logo', className]} href={href} title="Home">
   <Mark class="mark" width={size} height={size} aria-hidden="true" />
   {
     !markOnly && (

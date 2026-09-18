@@ -9,3 +9,5 @@ QUOTE_TO=sscardetailingca@gmail.com
 SEND_CUSTOMER_CONFIRMATION=false
 # Build-time (client) var: set it in the Workers Builds "build variables" too. Widget renders only when set.
 TURNSTILE_SITE_KEY=
+# Cloudflare Web Analytics token (build-time, client). Beacon renders only when set.
+CF_BEACON_TOKEN=

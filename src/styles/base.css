@@ -299,7 +299,7 @@ ol {
 .field label .optional {
   text-transform: none;
   letter-spacing: 0;
-  color: var(--muted-2);
+  color: var(--muted);
 }
 
 .field input,

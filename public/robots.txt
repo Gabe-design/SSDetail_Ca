@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /quote/thanks
+Disallow: /quote/error
+
+Sitemap: https://ssdetail.com/sitemap-index.xml

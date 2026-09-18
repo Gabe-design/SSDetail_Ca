@@ -12,7 +12,7 @@ interface Props {
   caption?: string;
 }
 const { caption = 'Real before/after from a recent job — drag the handle to see the full transformation.' } = Astro.props;
-const imgProps = { widths: [480, 800, 1200], sizes: '(min-width: 70em) 1072px, 100vw', quality: 72, loading: 'lazy' as const };
+const imgProps = { width: 1200, widths: [480, 800, 1200], sizes: '(min-width: 70em) 1072px, 100vw', quality: 66, loading: 'lazy' as const };
 ---
 
 <figure class="compare">

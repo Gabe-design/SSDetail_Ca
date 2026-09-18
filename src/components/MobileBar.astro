@@ -4,7 +4,7 @@
  * original floating button (which Netlify's badge covered). Hidden while the
  * quote form is on screen and on desktop, where the header CTA is always visible.
  */
-import { business, formatPhone } from '../data/business';
+import { business } from '../data/business';
 interface Props {
   /** Hide the bar entirely (e.g. on the quote page). */
   hidden?: boolean;
@@ -18,8 +18,7 @@ const { hidden = false } = Astro.props;
       {business.phone && (
         <a
           class="btn btn-ghost"
-          href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`}
-          aria-label={`${business.acceptsSms ? 'Text' : 'Call'} ${formatPhone(business.phone)}`}>
+          href={business.acceptsSms ? `sms:${business.phone}` : `tel:${business.phone}`}>
           {business.acceptsSms ? 'Text us' : 'Call us'}
         </a>
       )}

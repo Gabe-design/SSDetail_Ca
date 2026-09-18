@@ -10,6 +10,7 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
 ---
 
 <header class="site-header" id="site-header">
+  <div class="bar-outer">
   <ScrollProgress />
   <div class="wrap bar">
     <Logo size={34} />
@@ -36,6 +37,7 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
         <span class="icon-bars" aria-hidden="true"></span>
       </button>
     </div>
+  </div>
   </div>
 
   <nav class="mobile-menu" id="mobile-menu" aria-label="Primary (mobile)" hidden>
@@ -78,6 +80,9 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid transparent;
     border-image: var(--line-gradient) 1;
+  }
+  .bar-outer {
+    position: relative;
   }
   .bar {
     display: flex;

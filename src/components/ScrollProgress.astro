@@ -1,7 +1,7 @@
 ---
 /**
- * Thin metal-gradient bar along the top of the sticky header that fills as
- * the page scrolls. Pure CSS (scroll-driven animation) where supported, with a
+ * Thin metal-gradient bar along the bottom edge of the sticky header that fills
+ * as the page scrolls (it rides on the header's hairline border). Pure CSS (scroll-driven animation) where supported, with a
  * small JavaScript fallback elsewhere.
  */
 ---
@@ -11,7 +11,7 @@
 <style>
   .scroll-progress {
     position: absolute;
-    top: 0;
+    bottom: -1px;
     left: 0;
     width: 100%;
     height: 2px;

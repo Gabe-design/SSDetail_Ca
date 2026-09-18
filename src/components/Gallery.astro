@@ -18,6 +18,7 @@ const { items, eager = 0 } = Astro.props;
           <Image
             src={item.image}
             alt={item.alt}
+            width={720}
             widths={[360, 540, 720]}
             sizes="(min-width: 55em) 350px, 50vw"
             quality={72}

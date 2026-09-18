@@ -2,11 +2,16 @@
 import '@fontsource-variable/oswald';
 import '@fontsource-variable/work-sans';
 import '@fontsource-variable/jetbrains-mono';
+// Preload the two above-the-fold faces so headings don't reflow when they swap in.
+import oswaldWoff2 from '@fontsource-variable/oswald/files/oswald-latin-wght-normal.woff2?url';
+import workSansWoff2 from '@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2?url';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
 import { business } from '../data/business';
+import { CF_BEACON_TOKEN } from 'astro:env/client';
 
 interface Props {
   /** Page title without the brand suffix. */
@@ -34,6 +39,8 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="color-scheme" content="dark" />
+    <link rel="preload" as="font" type="font/woff2" href={oswaldWoff2} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={workSansWoff2} crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={business.name} />
@@ -47,6 +54,7 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <JsonLd />
     <slot name="head" />
   </head>
   <body>
@@ -57,6 +65,16 @@ const ogUrl = new URL(ogImage, Astro.site ?? business.siteUrl);
     </main>
     <Footer />
     <slot name="after-footer" />
+    {
+      CF_BEACON_TOKEN && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: CF_BEACON_TOKEN })}
+        />
+      )
+    }
   </body>
 </html>
 
