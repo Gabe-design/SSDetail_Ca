@@ -20,3 +20,10 @@
 - Cloudflare: Workers with static assets via `@astrojs/cloudflare`; `session: false` in astro.config so no KV is needed.
 
 Astro docs: https://docs.astro.build (routing, components, styling, images).
+
+## Deploying (until the Worker is reconnected to SSDetail_Ca)
+The Cloudflare wizard created a second repo, `Gabe-design/ssdetail-ca`, and the Worker builds from **that**
+(Workers & Pages → ssdetail-ca → Settings → Build). Its history was merged into `main` once (tree unchanged), so a
+deploy is: `git push origin main && git push cloudflare main` (remote `cloudflare` = ssdetail-ca). Builds take ~45 s;
+no GitHub status is posted, so confirm by checking the live CSS/HTML. Preferred fix: reconnect the Worker to
+`SSDetail_Ca` in the dashboard and delete `ssdetail-ca`, then drop the `cloudflare` remote.
