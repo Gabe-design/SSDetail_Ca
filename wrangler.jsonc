@@ -11,19 +11,38 @@
 	"observability": {
 		"enabled": true
 	},
-	// Plain (non-secret) settings. Secrets (RESEND_API_KEY, TURNSTILE_SECRET_KEY) are set with
-	// `npx wrangler secret bulk .dev.vars` or in the dashboard, never here.
+
+	// ---------------------------------------------------------------------------
+	// TESTING (default environment): `npx wrangler deploy`
+	// Worker "ssdetail-ca" at ssdetail-ca.<account>.workers.dev. Quote emails go to Gabe.
+	// Resend's test sender only delivers to the Resend account owner, so this works before
+	// the domain is verified.
+	// ---------------------------------------------------------------------------
 	"vars": {
-		// TEMPORARY: while the sender is Resend's test address, Resend only delivers to the Resend account
-		// owner. Switch back to "sscardetailingca@gmail.com" once ssdetail.com is verified (docs/LAUNCH.md step 4).
 		"QUOTE_TO": "gabrielaross8@gmail.com",
-		// Switch to "SS Detail Website <quotes@ssdetail.com>" once the domain is verified in Resend.
 		"RESEND_FROM": "SS Detail Website <onboarding@resend.dev>",
 		"SEND_CUSTOMER_CONFIRMATION": "false"
+	},
+
+	// ---------------------------------------------------------------------------
+	// PRODUCTION: `npx wrangler deploy --env production`
+	// A separate Worker "ssdetail-ca-production" with its own vars and secrets, serving
+	// ssdetail.com once the domain is on Cloudflare (uncomment "routes"). Quote emails go
+	// to the client from the verified domain. Environments do not inherit "vars", so all
+	// three are repeated here on purpose. Secrets: `npx wrangler secret bulk .dev.vars --env production`.
+	// ---------------------------------------------------------------------------
+	"env": {
+		"production": {
+			"name": "ssdetail-ca-production",
+			"vars": {
+				"QUOTE_TO": "sscardetailingca@gmail.com",
+				"RESEND_FROM": "SS Detail Website <quotes@ssdetail.com>",
+				"SEND_CUSTOMER_CONFIRMATION": "false"
+			}
+			// "routes": [
+			// 	{ "pattern": "ssdetail.com", "custom_domain": true },
+			// 	{ "pattern": "www.ssdetail.com", "custom_domain": true }
+			// ]
+		}
 	}
-	// Custom domain (docs/LAUNCH.md step 5) — uncomment when ssdetail.com is on Cloudflare:
-	// "routes": [
-	// 	{ "pattern": "ssdetail.com", "custom_domain": true },
-	// 	{ "pattern": "www.ssdetail.com", "custom_domain": true }
-	// ]
 }

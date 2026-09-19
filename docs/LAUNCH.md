@@ -38,18 +38,30 @@ error until step 3 (no API key yet).
    ssdetail.com once verified). Copy it once.
 5. Paste it into `.dev.vars` (git-ignored) as `RESEND_API_KEY=re_...` and tell Claude, or run step 3 yourself.
 
-## 3. Secrets on the Worker
+## 3. Two environments: testing (you) and production (the client)
+
+`wrangler.jsonc` defines two Workers from the same code:
+
+| | Worker | Command | Quote emails go to | Sender |
+|---|---|---|---|---|
+| **Testing** (default) | `ssdetail-ca` at `ssdetail-ca.gabrielaross8.workers.dev` | `npm run deploy` | gabrielaross8@gmail.com | onboarding@resend.dev (test) |
+| **Production** | `ssdetail-ca-production` on ssdetail.com | `npm run deploy:production` | sscardetailingca@gmail.com | quotes@ssdetail.com (needs step 4) |
+
+The environment is chosen at **build** time (`CLOUDFLARE_ENV=production`, which `build:production` sets), because
+the Astro adapter resolves the Wrangler config while building. Each Worker has its own secrets:
 
 ```bash
-npx wrangler secret bulk .dev.vars
+npm run secrets              # uploads .dev.vars to ssdetail-ca (testing)
+npm run secrets:production   # uploads .dev.vars to ssdetail-ca-production
 ```
-That uploads every `KEY=VALUE` in `.dev.vars` (RESEND_API_KEY, TURNSTILE_SECRET_KEY if set). Plain vars
-(QUOTE_TO, RESEND_FROM, SEND_CUSTOMER_CONFIRMATION) live in `wrangler.jsonc` and deploy with the code.
 
-Test: submit the form on the workers.dev URL. The email lands in the Resend account owner's inbox
-(from `onboarding@resend.dev`) until the domain is verified; then it goes to `QUOTE_TO`.
+With Workers Builds, make it two dashboard projects on the same repo: the existing one for testing
+(branch `main`, build `npm run build`, deploy `npx wrangler deploy`) and a second one named
+`ssdetail-ca-production` (branch `production`, build `npm run build:production`, deploy
+`npx wrangler deploy --env production`). Day to day: push to `main` to test, merge `main` into
+`production` to go live. Secrets for the production project are set once in its dashboard settings.
 
-Local test instead: `npm run dev`, submit at http://localhost:4321/quote (reads `.dev.vars`).
+Local test: `npm run dev`, submit at http://localhost:4321/quote (reads `.dev.vars`).
 
 ## 4. Move ssdetail.com to Cloudflare DNS (you, ~10 min + propagation)
 
@@ -61,11 +73,12 @@ Local test instead: `npm run dev`, submit at http://localhost:4321/quote (reads 
    Verify. Then change `RESEND_FROM` in `wrangler.jsonc` to `SS Detail Website <quotes@ssdetail.com>` and
    redeploy. Confirmations to customers (`SEND_CUSTOMER_CONFIRMATION`) can be switched on from this point.
 
-## 5. Custom domain on the Worker
+## 5. Custom domain on the production Worker
 
-Uncomment the `routes` block in `wrangler.jsonc`, then `npx wrangler deploy`. Cloudflare creates the DNS
-records and certificate for `ssdetail.com` and `www.ssdetail.com`. Delete any leftover Squarespace A/CNAME
-records for the apex and www if the deploy reports a conflict.
+Uncomment the `routes` block inside `env.production` in `wrangler.jsonc`, then `npm run deploy:production`
+(or push to the `production` branch). Cloudflare creates the DNS records and certificate for `ssdetail.com` and
+`www.ssdetail.com`. Delete any leftover Squarespace A/CNAME records for the apex and www if the deploy reports
+a conflict. The testing Worker keeps its workers.dev URL.
 
 Confirm `https://ssdetail.com` shows the new site, then in Squarespace unpublish the old site and, on
 Netlify, delete the `fancy-bienenstitch` site (or set a redirect to ssdetail.com).

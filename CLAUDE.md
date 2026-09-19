@@ -21,6 +21,12 @@
 
 Astro docs: https://docs.astro.build (routing, components, styling, images).
 
+## Environments
+Testing = default env (Worker `ssdetail-ca`, emails to Gabe, Resend test sender). Production = `env.production`
+(Worker `ssdetail-ca-production`, emails to the client, quotes@ssdetail.com). The env is fixed at BUILD time via
+`CLOUDFLARE_ENV` (`npm run build:production`); `wrangler deploy --env production` alone is not enough.
+Scripts: deploy / deploy:production / secrets / secrets:production.
+
 ## Deploying (until the Worker is reconnected to SSDetail_Ca)
 The Cloudflare wizard created a second repo, `Gabe-design/ssdetail-ca`, and the Worker builds from **that**
 (Workers & Pages → ssdetail-ca → Settings → Build). Its history was merged into `main` once (tree unchanged), so a

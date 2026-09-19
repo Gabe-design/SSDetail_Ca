@@ -12,7 +12,12 @@
     "astro": "astro",
     "generate-types": "wrangler types",
     "brand": "node scripts/build-brand.mjs",
-    "check": "astro check"
+    "check": "astro check",
+    "build:production": "cross-env CLOUDFLARE_ENV=production astro build",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:production": "npm run build:production && wrangler deploy --env production",
+    "secrets": "wrangler secret bulk .dev.vars",
+    "secrets:production": "wrangler secret bulk .dev.vars --env production"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",
@@ -29,6 +34,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "cross-env": "^10.1.0",
     "opentype.js": "^2.0.0",
     "typescript": "^6.0.3"
   }
