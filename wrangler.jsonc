@@ -14,7 +14,9 @@
 	// Plain (non-secret) settings. Secrets (RESEND_API_KEY, TURNSTILE_SECRET_KEY) are set with
 	// `npx wrangler secret bulk .dev.vars` or in the dashboard, never here.
 	"vars": {
-		"QUOTE_TO": "sscardetailingca@gmail.com",
+		// TEMPORARY: while the sender is Resend's test address, Resend only delivers to the Resend account
+		// owner. Switch back to "sscardetailingca@gmail.com" once ssdetail.com is verified (docs/LAUNCH.md step 4).
+		"QUOTE_TO": "gabrielaross8@gmail.com",
 		// Switch to "SS Detail Website <quotes@ssdetail.com>" once the domain is verified in Resend.
 		"RESEND_FROM": "SS Detail Website <onboarding@resend.dev>",
 		"SEND_CUSTOMER_CONFIRMATION": "false"
