@@ -76,6 +76,20 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
     top: 0;
     z-index: var(--z-header);
     background: rgba(10, 10, 10, 0.94);
+    /* iOS Safari paints the page behind its status bar once the address bar collapses, so the
+       strip above the sticky header showed scrolling content. Extend a solid slab upward to cover it. */
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 160px;
+    background: var(--bg);
+    pointer-events: none;
+  }
+  .site-header {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid transparent;
